@@ -24,15 +24,20 @@
  * - ✅ Infinite loop protection (fixed)
  * - ✅ Cross-platform spawn handling
  * - ✅ Graceful shutdown on SIGINT/SIGTERM
+ * - ✅ ES Modules compatibility
  *
- * @version 2.0.0
+ * @version 2.1.0
  * @author Poll App Team
  */
 
-const { execSync, spawn } = require('child_process')
-const fs = require('fs')
-const path = require('path')
-const os = require('os')
+import { execSync, spawn } from 'child_process'
+import fs from 'fs'
+import path from 'path'
+import os from 'os'
+// ES modules setup (for future use if needed)
+// import { fileURLToPath } from 'url'
+// const __filename = fileURLToPath(import.meta.url)
+// const __dirname = path.dirname(__filename)
 
 // Colors for console output
 const colors = {
@@ -80,11 +85,12 @@ function checkPackageJson() {
   }
 
   try {
-    const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'))
-    log.success(`Project: ${packageJson.name} v${packageJson.version}`)
+    const packageContent = fs.readFileSync(packagePath, 'utf8')
+    const packageData = JSON.parse(packageContent)
+    log.success(`Project: ${packageData.name} v${packageData.version}`)
     return true
-  } catch (error) {
-    log.error('Invalid package.json')
+  } catch (err) {
+    log.error(`Invalid package.json: ${err.message}`)
     return false
   }
 }
@@ -109,9 +115,9 @@ function runTypeCheck() {
     execSync(`${command} run type-check`, { stdio: 'pipe' })
     log.success('TypeScript check passed ✓')
     return true
-  } catch (error) {
+  } catch (err) {
     log.warning(
-      'TypeScript check failed. Run "npm run type-check" to see details.'
+      `TypeScript check failed: ${err.message}. Run "npm run type-check" to see details.`
     )
     return false
   }
@@ -125,9 +131,9 @@ function runLinting() {
     execSync(`${command} run lint:check`, { stdio: 'pipe' })
     log.success('Linting check passed ✓')
     return true
-  } catch (error) {
+  } catch (err) {
     log.warning(
-      'Linting issues found. Run "npm run lint" to fix automatically.'
+      `Linting issues found: ${err.message}. Run "npm run lint" to fix automatically.`
     )
     return false
   }
@@ -163,10 +169,12 @@ function checkProjectStructure() {
 }
 
 function displayProjectInfo() {
-  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+  try {
+    const packageContent = fs.readFileSync('package.json', 'utf8')
+    const packageData = JSON.parse(packageContent)
 
-  console.log(`
-${colors.bold}${colors.magenta}📊 Poll App - Next.js Polling Platform${colors.reset}
+    console.log(`
+${colors.bold}${colors.magenta}📊 ${packageData.name} - Next.js Polling Platform${colors.reset}
 ${colors.cyan}════════════════════════════════════════════════${colors.reset}
 
 ${colors.bold}Project Overview:${colors.reset}
@@ -174,6 +182,7 @@ ${colors.bold}Project Overview:${colors.reset}
 • Built with Next.js 15, TypeScript, and Tailwind CSS
 • Responsive design with mobile-first approach
 • QR code sharing and analytics dashboard
+• Version: ${packageData.version}
 
 ${colors.bold}Available Features:${colors.reset}
 • ✅ Poll creation with multiple options
@@ -195,6 +204,9 @@ ${colors.bold}Quick Commands:${colors.reset}
 
 ${colors.cyan}════════════════════════════════════════════════${colors.reset}
 `)
+  } catch (err) {
+    log.warning(`Could not read package.json for project info: ${err.message}`)
+  }
 }
 
 function startDevServer(skipChecks = false) {
@@ -243,8 +255,8 @@ function startDevServer(skipChecks = false) {
     env: { ...process.env, FORCE_COLOR: '1' }
   })
 
-  server.on('error', (error) => {
-    log.error(`Failed to start development server: ${error.message}`)
+  server.on('error', (err) => {
+    log.error(`Failed to start development server: ${err.message}`)
     process.exit(1)
   })
 
@@ -290,11 +302,11 @@ const helpRequested = args.includes('--help') || args.includes('-h')
 
 if (helpRequested) {
   console.log(`
-${colors.bold}${colors.cyan}Poll App Development Server Start Script v2.0.0${colors.reset}
+${colors.bold}${colors.cyan}Poll App Development Server Start Script v2.1.0${colors.reset}
 
 ${colors.bold}DESCRIPTION:${colors.reset}
   Comprehensive development environment with quality checks and validation.
-  Fixed infinite loop issue and added cross-platform compatibility.
+  Updated with ES modules support and improved error handling.
 
 ${colors.bold}USAGE:${colors.reset}
   node scripts/start.js [options]
@@ -316,12 +328,12 @@ ${colors.bold}QUALITY CHECKS PERFORMED:${colors.reset}
   • TypeScript compilation validation
   • ESLint code quality check
 
-${colors.bold}FIXES APPLIED:${colors.reset}
+${colors.bold}RECENT IMPROVEMENTS:${colors.reset}
+  ✅ ES Modules compatibility added
   ✅ Infinite loop issue resolved
-  ✅ Cross-platform compatibility added
+  ✅ Cross-platform compatibility
   ✅ Graceful shutdown handling
-  ✅ Deprecation warnings fixed
-  ✅ Error handling improved
+  ✅ Better error handling
 
 ${colors.bold}SUPPORTED PLATFORMS:${colors.reset}
   • Windows (win32)
@@ -334,11 +346,12 @@ For more information, visit the project documentation.
 }
 
 // Main execution
-if (require.main === module) {
+const isMainModule = import.meta.url === `file://${process.argv[1]}`
+if (isMainModule) {
   startDevServer(skipChecks)
 }
 
-module.exports = {
+export {
   startDevServer,
   checkNodeVersion,
   checkPackageJson,
