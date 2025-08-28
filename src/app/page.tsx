@@ -3,11 +3,12 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { useResponsive } from '@/hooks/use-responsive'
+import { cn } from '@/lib/utils'
 
 import {
   BarChart3,
   Users,
-  Clock,
   Shield,
   Zap,
   Globe,
@@ -15,11 +16,17 @@ import {
   Star,
   Plus,
   TrendingUp,
+  Sparkles,
+  Rocket,
+  Heart,
+  Clock,
+  CheckCircle,
 } from '@/components/ui/icons'
 
 export default function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false)
   const [mounted, setMounted] = React.useState(false)
+  const { isMobile, isTablet } = useResponsive()
 
   React.useEffect(() => {
     setMounted(true)
@@ -28,46 +35,50 @@ export default function HomePage() {
     }
   }, [])
 
+
+
   const features = [
     {
       icon: <BarChart3 className="h-8 w-8" />,
       title: 'Real-time Analytics',
-      description:
-        'Watch votes pour in with stunning visualizations and live updates.',
-      gradient: 'from-brand-blue to-brand-indigo',
+      description: 'Watch votes pour in with stunning visualizations and live updates that refresh instantly.',
+      gradient: 'from-blue-500 to-indigo-600',
+      delay: 0,
     },
     {
       icon: <Users className="h-8 w-8" />,
       title: 'Smart Sharing',
-      description:
-        'Generate QR codes and share polls instantly across all platforms.',
-      gradient: 'from-brand-indigo to-purple-600',
+      description: 'Generate QR codes and share polls instantly across all platforms with seamless integration.',
+      gradient: 'from-indigo-500 to-purple-600',
+      delay: 100,
     },
     {
       icon: <Shield className="h-8 w-8" />,
       title: 'Secure & Private',
-      description:
-        'Enterprise-grade security with optional authentication controls.',
-      gradient: 'from-purple-600 to-brand-orange',
+      description: 'Enterprise-grade security with optional authentication controls and data protection.',
+      gradient: 'from-purple-500 to-pink-600',
+      delay: 200,
     },
     {
       icon: <Zap className="h-8 w-8" />,
       title: 'Lightning Fast',
-      description:
-        'Create professional polls in seconds with our intuitive interface.',
-      gradient: 'from-brand-orange to-orange-400',
+      description: 'Create professional polls in seconds with our intuitive and powerful interface.',
+      gradient: 'from-pink-500 to-rose-600',
+      delay: 300,
     },
     {
       icon: <Globe className="h-8 w-8" />,
       title: 'Global Reach',
-      description: 'Mobile-optimized design works perfectly on any device.',
-      gradient: 'from-orange-400 to-brand-blue',
+      description: 'Mobile-optimized design that works perfectly on any device, anywhere in the world.',
+      gradient: 'from-rose-500 to-orange-600',
+      delay: 400,
     },
     {
       icon: <Clock className="h-8 w-8" />,
       title: 'Smart Scheduling',
-      description: 'Set expiration times or keep polls open indefinitely.',
-      gradient: 'from-brand-blue to-brand-indigo',
+      description: 'Set expiration times, schedule releases, or keep polls open indefinitely.',
+      gradient: 'from-orange-500 to-yellow-600',
+      delay: 500,
     },
   ]
 
@@ -76,169 +87,201 @@ export default function HomePage() {
       label: 'Active Polls',
       value: '12K+',
       icon: <BarChart3 className="h-6 w-6" />,
+      color: 'text-blue-400',
     },
     {
       label: 'Total Votes',
       value: '2.5M+',
       icon: <TrendingUp className="h-6 w-6" />,
+      color: 'text-green-400',
     },
     {
       label: 'Happy Users',
       value: '50K+',
       icon: <Users className="h-6 w-6" />,
+      color: 'text-purple-400',
     },
-    { label: 'Countries', value: '195', icon: <Globe className="h-6 w-6" /> },
+    {
+      label: 'Countries',
+      value: '195',
+      icon: <Globe className="h-6 w-6" />,
+      color: 'text-orange-400',
+    },
   ]
 
   const testimonials = [
     {
-      quote:
-        'This platform transformed how we make team decisions. The real-time results are incredible!',
+      quote: 'This platform transformed how we make team decisions. The real-time results are incredible!',
       author: 'Sarah Chen',
       role: 'Product Manager',
       company: 'TechFlow',
       avatar: 'SC',
+      rating: 5,
     },
     {
-      quote:
-        'The QR code feature made our conference polling seamless. Attendees loved it!',
+      quote: 'The QR code feature made our conference polling seamless. Attendees loved the experience!',
       author: 'Michael Torres',
       role: 'Event Director',
       company: 'InnovateX',
       avatar: 'MT',
+      rating: 5,
     },
     {
-      quote:
-        'Beautiful interface, powerful analytics. Everything we needed for customer feedback.',
+      quote: 'Beautiful interface, powerful analytics. Everything we needed for customer feedback.',
       author: 'Emily Rodriguez',
       role: 'Marketing Lead',
       company: 'GrowthLab',
       avatar: 'ER',
+      rating: 5,
     },
   ]
 
   if (!mounted) {
-    return null
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary/20 border-t-primary mx-auto"></div>
+          <p className="premium-body-sm premium-muted">Loading amazing polls...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Animated Particles Background */}
-      <div className="particles fixed inset-0 pointer-events-none z-0">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="particle absolute"
-            style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 8}s`,
-              animationDuration: `${8 + Math.random() * 4}s`,
-            }}
-          />
-        ))}
+      {/* Enhanced Animated Background */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-muted/20"></div>
+        {!isMobile && (
+          <>
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/8 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-brand-accent/8 rounded-full blur-3xl animate-pulse animation-delay-2000"></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-brand-blue/6 rounded-full blur-3xl animate-pulse animation-delay-4000"></div>
+          </>
+        )}
       </div>
 
       {/* Hero Section */}
-      <section className="hero-section relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        {/* Floating Orbs */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-brand-blue/20 rounded-full blur-2xl animate-float opacity-60"></div>
-        <div className="absolute bottom-20 right-10 w-24 h-24 bg-brand-orange/20 rounded-full blur-xl animate-float-delayed opacity-40"></div>
-        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-brand-indigo/30 rounded-full blur-lg animate-pulse-glow"></div>
+      <section className={cn(
+        "relative section-padding-responsive",
+        "container-responsive text-center relative z-10"
+      )}>
+        <div className="max-w-6xl mx-auto">
+          {/* Hero Badge */}
+          <div className={cn(
+            "inline-flex items-center gap-2 glass-card rounded-full font-medium mb-8 animate-fade-in hover:scale-105 transition-all duration-300",
+            isMobile ? "px-4 py-2 text-xs" : "px-6 py-3 text-sm"
+          )}>
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-glow-sm"></div>
+            <span className="premium-muted">Join 50K+ users worldwide</span>
+            <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+          </div>
 
-        <div className="max-w-7xl mx-auto text-center relative z-10">
-          <div className="stagger-fade-in space-y-8">
-            {/* Hero Badge */}
-            <div className="inline-flex items-center gap-2 glass-card px-4 py-2 rounded-full text-sm font-medium">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-white/80">Join 50K+ users worldwide</span>
-            </div>
+          {/* Hero Headline */}
+          <div className={cn("space-y-8 mb-12", isMobile ? "space-y-6" : "")}>
+            <h1 className="heading-responsive font-bold leading-tight max-w-5xl mx-auto">
+              <span className="block animate-slide-up">Create Polls</span>
+              <span className="block premium-gradient-text animate-slide-up" style={{ animationDelay: '200ms' }}>
+                That Captivate
+              </span>
+              <span className={cn(
+                "block animate-slide-up premium-muted font-normal",
+                isMobile ? "text-base mt-2" : "text-lg mt-4"
+              )} style={{ animationDelay: '300ms' }}>
+                & Drive Engagement
+              </span>
+            </h1>
+            <p className={cn(
+              "body-responsive content-width-responsive mx-auto leading-relaxed animate-slide-up",
+              isMobile ? "px-4" : "px-0"
+            )} style={{ animationDelay: '400ms' }}>
+              Transform decision-making with our stunning, responsive polling platform.
+              Real-time results, beautiful analytics, and seamless sharing across all devices.
+            </p>
+          </div>
 
-            {/* Hero Headline */}
-            <div className="space-y-6">
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight">
-                <span className="hero-gradient-text block">Create Polls</span>
-                <span className="hero-gradient-text block">That Captivate</span>
-              </h1>
-              <p className="text-xl md:text-2xl text-white/70 max-w-4xl mx-auto leading-relaxed">
-                Transform decision-making with our stunning polling platform.
-                Real-time results, beautiful analytics, and seamless sharing.
-              </p>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-4">
-              {isAuthenticated ? (
-                <Link href="/polls/new" className="group">
-                  <div className="floating-button px-8 py-4 text-lg font-semibold text-white flex items-center gap-3">
-                    <Plus className="h-6 w-6 group-hover:rotate-90 transition-transform duration-300" />
-                    Create Your Poll
-                    <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform duration-300" />
-                  </div>
-                </Link>
-              ) : (
-                <Link href="/auth/register" className="group">
-                  <div className="floating-button px-8 py-4 text-lg font-semibold text-white flex items-center gap-3">
-                    <Zap className="h-6 w-6 group-hover:scale-110 transition-transform duration-300" />
-                    Start Free Today
-                    <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform duration-300" />
-                  </div>
-                </Link>
-              )}
-
-              <Link href="/polls">
+          {/* CTA Buttons */}
+          <div className={cn(
+            "flex gap-4 justify-center items-center pt-4 animate-slide-up",
+            isMobile ? "flex-col w-full" : "flex-row"
+          )} style={{ animationDelay: '600ms' }}>
+            {isAuthenticated ? (
+              <Link href="/polls/new" className={isMobile ? "w-full" : ""}>
                 <Button
-                  variant="ghost"
-                  size="lg"
-                  className="glass-button text-lg px-8 py-4 border-white/20 text-white hover:bg-white/10"
+                  variant="gradient"
+                  size={isMobile ? "default" : "lg"}
+                  className={cn("group", isMobile ? "w-full" : "")}
                 >
-                  <BarChart3 className="h-6 w-6 mr-2" />
-                  View Examples
+                  <Plus className="h-5 w-5 group-hover:rotate-90 transition-transform duration-300" />
+                  Create Your Poll
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                 </Button>
               </Link>
-            </div>
+            ) : (
+              <Link href="/auth/register" className={isMobile ? "w-full" : ""}>
+                <Button
+                  variant="gradient"
+                  size={isMobile ? "default" : "lg"}
+                  className={cn("group", isMobile ? "w-full" : "")}
+                >
+                  <Rocket className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                  Start Free Today
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+                </Button>
+              </Link>
+            )}
 
-            {/* Trust Indicators */}
-            <div className="pt-8 text-center">
-              <p className="text-white/60 text-sm mb-4">
-                Trusted by leading teams
-              </p>
-              <div className="flex items-center justify-center gap-1 text-yellow-400">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-4 w-4 fill-current" />
-                ))}
-                <span className="ml-2 text-white/70 text-sm">
-                  4.9/5 from 2.1K+ reviews
-                </span>
-              </div>
-            </div>
+            <Link href="/polls" className={isMobile ? "w-full" : ""}>
+              <Button
+                variant="glass"
+                size={isMobile ? "default" : "lg"}
+                className={cn("group", isMobile ? "w-full" : "")}
+              >
+                <BarChart3 className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                Explore Polls
+              </Button>
+            </Link>
           </div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="scroll-indicator animate-bounce-slow">
-          <div className="text-white/60 text-sm mb-2">Discover More</div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <section className={cn(
+        "relative section-padding-responsive bg-muted/5",
+        "container-responsive"
+      )}>
+        <div className="max-w-6xl mx-auto">
+          <div className={cn(
+            "grid gap-6",
+            isMobile ? "grid-cols-2" : isTablet ? "grid-cols-2" : "grid-cols-4"
+          )}>
             {stats.map((stat, index) => (
               <div
-                key={index}
-                className="glass-card p-6 text-center group cursor-pointer"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                key={stat.label}
+                className={cn(
+                  "glass-card text-center group hover:scale-105 transition-all duration-300 card-responsive animate-fade-in hover:shadow-glow-sm",
+                )}
+                style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="text-brand-blue mb-2 flex justify-center group-hover:scale-110 transition-transform duration-300">
-                  {stat.icon}
+                <div className={cn(
+                  "inline-flex items-center justify-center rounded-full mb-4 bg-current/10 shadow-glow-sm group-hover:shadow-glow transition-all duration-300",
+                  stat.color,
+                  isMobile ? "w-10 h-10" : "w-12 h-12"
+                )}>
+                  <span className={cn(stat.color, isMobile ? "text-base" : "text-lg")}>
+                    <div className={cn(isMobile ? "h-4 w-4" : "h-5 w-5", "inline-block")}>
+                      {stat.icon}
+                    </div>
+                  </span>
                 </div>
-                <div className="text-2xl md:text-3xl font-bold gradient-text mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-white/70 text-sm font-medium">
-                  {stat.label}
-                </div>
+                <div className={cn(
+                  "font-bold premium-text mb-2 group-hover:premium-accent-text transition-colors duration-300",
+                  isMobile ? "text-xl" : "premium-heading-md"
+                )}>{stat.value}</div>
+                <div className={cn(
+                  "premium-muted",
+                  isMobile ? "text-xs" : "premium-body-sm"
+                )}>{stat.label}</div>
               </div>
             ))}
           </div>
@@ -246,277 +289,226 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 stagger-fade-in">
-            <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              Powerful Features
+      <section className="relative section-padding-responsive container-responsive">
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header */}
+          <div className={cn("text-center mb-16", isMobile ? "mb-12" : "")}>
+            <h2 className={cn(
+              "subheading-responsive font-bold premium-text mb-6",
+              isMobile ? "mb-4" : ""
+            )}>
+              Powerful Features for Modern Polling
             </h2>
-            <p className="text-xl text-white/70 max-w-3xl mx-auto">
-              Everything you need to create, share, and analyze polls with
-              professional results.
+            <p className={cn(
+              "body-responsive content-width-responsive mx-auto premium-muted",
+              isMobile ? "px-4" : ""
+            )}>
+              Everything you need to create, share, and analyze polls with professional-grade tools
+              and beautiful, responsive design that works perfectly on every device.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
+          {/* Features Grid */}
+          <div className={cn(
+            "grid gap-6",
+            isMobile ? "grid-cols-1" : isTablet ? "grid-cols-2" : "grid-cols-3"
+          )}>
+            {features.map((feature) => (
               <div
-                key={index}
-                className="glass-card p-8 group cursor-pointer ripple-effect"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                key={feature.title}
+                className={cn(
+                  "glass-card group hover:scale-105 hover:shadow-glow transition-all duration-500 animate-fade-in card-responsive",
+                  isMobile ? "p-6" : ""
+                )}
+                style={{ animationDelay: `${feature.delay}ms` }}
               >
-                <div
-                  className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.gradient} p-4 mb-6 group-hover:scale-110 transition-all duration-300 shadow-glow`}
-                >
-                  <div className="text-white">{feature.icon}</div>
+                {/* Icon */}
+                <div className={cn(
+                  "inline-flex items-center justify-center rounded-2xl mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300",
+                  `bg-gradient-to-br ${feature.gradient}`,
+                  isMobile ? "w-12 h-12" : "w-16 h-16"
+                )}>
+                  <span className="text-white group-hover:scale-110 transition-transform duration-300">
+                    <div className={cn(isMobile ? "h-6 w-6" : "h-8 w-8", "inline-block")}>
+                      {feature.icon}
+                    </div>
+                  </span>
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3 group-hover:gradient-text transition-all duration-300">
+
+                {/* Content */}
+                <h3 className={cn(
+                  "font-semibold premium-text mb-4 group-hover:premium-accent-text transition-colors duration-300",
+                  isMobile ? "text-lg" : "premium-heading-sm"
+                )}>
                   {feature.title}
                 </h3>
-                <p className="text-white/70 leading-relaxed">
+                <p className={cn(
+                  "premium-muted group-hover:premium-muted/80 transition-colors duration-300 leading-relaxed",
+                  isMobile ? "text-sm" : "premium-body"
+                )}>
                   {feature.description}
                 </p>
+
+                {/* Hover indicator */}
+                <div className="w-0 h-1 bg-gradient-to-r from-primary to-secondary rounded-full group-hover:w-full transition-all duration-500 mt-6"></div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Demo Section */}
-      <section className="py-20 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8">
-              <div className="stagger-fade-in">
-                <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-                  See It In Action
-                </h2>
-                <p className="text-xl text-white/70 mb-8">
-                  Experience the power of real-time polling with our interactive
-                  demo. Watch votes update instantly with beautiful animations.
-                </p>
-
-                <div className="space-y-4">
-                  {[
-                    {
-                      feature: 'Real-time vote tracking',
-                      icon: <TrendingUp className="h-5 w-5" />,
-                    },
-                    {
-                      feature: 'Beautiful result visualization',
-                      icon: <BarChart3 className="h-5 w-5" />,
-                    },
-                    {
-                      feature: 'Instant QR code generation',
-                      icon: <Zap className="h-5 w-5" />,
-                    },
-                    {
-                      feature: 'Mobile-responsive design',
-                      icon: <Globe className="h-5 w-5" />,
-                    },
-                  ].map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-3 text-white/80"
-                    >
-                      <div className="text-brand-blue">{item.icon}</div>
-                      <span>{item.feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+      {/* Testimonials Section */}
+      <section className="relative section-padding-responsive bg-muted/5 border-y border-border/30">
+        <div className="container-responsive">
+          <div className="max-w-6xl mx-auto">
+            {/* Section Header */}
+            <div className={cn("text-center mb-16", isMobile ? "mb-12" : "")}>
+              <h2 className={cn(
+                "subheading-responsive font-bold premium-text mb-6",
+                isMobile ? "mb-4" : ""
+              )}>
+                Loved by Teams Worldwide
+              </h2>
+              <p className={cn(
+                "body-responsive content-width-responsive mx-auto premium-muted",
+                isMobile ? "px-4" : ""
+              )}>
+                See what our users are saying about their polling experience.
+              </p>
             </div>
 
-            {/* Demo Poll Card */}
-            <div className="relative">
-              {/* Floating elements */}
-              <div className="absolute -top-4 -left-4 w-8 h-8 bg-brand-blue/30 rounded-full blur-sm animate-float"></div>
-              <div className="absolute -bottom-4 -right-4 w-6 h-6 bg-brand-orange/40 rounded-full blur-sm animate-float-delayed"></div>
+            {/* Testimonials Grid */}
+            <div className={cn(
+              "grid gap-6",
+              isMobile ? "grid-cols-1" : isTablet ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+            )}>
+              {testimonials.map((testimonial, index) => (
+                <div
+                  key={testimonial.author}
+                  className={cn(
+                    "glass-card group hover:scale-105 transition-all duration-300 animate-fade-in card-responsive",
+                    isMobile ? "p-6" : ""
+                  )}
+                  style={{ animationDelay: `${index * 150}ms` }}
+                >
+                  {/* Rating */}
+                  <div className={cn("flex items-center gap-1 mb-6", isMobile ? "mb-4" : "")}>
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className={cn(
+                        "fill-yellow-400 text-yellow-400",
+                        isMobile ? "h-4 w-4" : "h-5 w-5"
+                      )} />
+                    ))}
+                  </div>
 
-              <div className="glass-card p-8 card-glow">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-semibold text-white">
-                    What&apos;s your favorite coding language?
-                  </h3>
-                  <div className="text-white/60 text-sm">127 votes</div>
-                </div>
+                  {/* Quote */}
+                  <blockquote className={cn(
+                    "premium-muted mb-8 italic leading-relaxed",
+                    isMobile ? "text-sm mb-6" : "premium-body"
+                  )}>
+                    &ldquo;{testimonial.quote}&rdquo;
+                  </blockquote>
 
-                <div className="space-y-4">
-                  {[
-                    {
-                      name: 'JavaScript',
-                      votes: 45,
-                      percentage: 45,
-                      color: 'bg-brand-blue',
-                    },
-                    {
-                      name: 'Python',
-                      votes: 38,
-                      percentage: 38,
-                      color: 'bg-brand-indigo',
-                    },
-                    {
-                      name: 'TypeScript',
-                      votes: 32,
-                      percentage: 32,
-                      color: 'bg-brand-orange',
-                    },
-                    {
-                      name: 'Go',
-                      votes: 12,
-                      percentage: 12,
-                      color: 'bg-purple-500',
-                    },
-                  ].map((option, index) => (
-                    <div key={index} className="space-y-2 group cursor-pointer">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-white font-medium group-hover:gradient-text transition-all duration-300">
-                          {option.name}
-                        </span>
-                        <span className="text-white/70">
-                          {option.votes} votes ({option.percentage}%)
-                        </span>
-                      </div>
-                      <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden">
-                        <div
-                          className={`h-full ${option.color} rounded-full transition-all duration-1000 ease-out shadow-glow group-hover:shadow-glow-lg`}
-                          style={{
-                            width: `${option.percentage}%`,
-                            animationDelay: `${index * 0.2}s`,
-                          }}
-                        />
+                  {/* Author */}
+                  <div className="flex items-center gap-4">
+                    <div className={cn(
+                      "rounded-full bg-gradient-to-br from-primary to-brand-accent flex items-center justify-center text-white font-semibold shadow-glow-sm",
+                      isMobile ? "w-10 h-10 text-sm" : "w-12 h-12"
+                    )}>
+                      {testimonial.avatar}
+                    </div>
+                    <div>
+                      <div className={cn(
+                        "font-semibold premium-text",
+                        isMobile ? "text-sm" : "premium-body"
+                      )}>{testimonial.author}</div>
+                      <div className={cn(
+                        "premium-muted",
+                        isMobile ? "text-xs" : "premium-body-sm"
+                      )}>
+                        {testimonial.role} at {testimonial.company}
                       </div>
                     </div>
-                  ))}
+                  </div>
                 </div>
-
-                <div className="mt-8 pt-6 border-t border-white/10 flex gap-3">
-                  <Button className="flex-1 glass-button">
-                    <BarChart3 className="h-4 w-4 mr-2" />
-                    View Results
-                  </Button>
-                  <Button className="flex-1 glass-button">
-                    <Users className="h-4 w-4 mr-2" />
-                    Share Poll
-                  </Button>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              Loved by Teams Worldwide
-            </h2>
-            <div className="flex justify-center items-center gap-2 mb-4">
-              <div className="flex gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className="h-6 w-6 text-yellow-400 fill-current"
-                  />
-                ))}
-              </div>
-              <span className="text-white/70 ml-2">
-                4.9/5 from 2,100+ reviews
+      {/* CTA Section */}
+      <section className="relative section-padding-responsive container-responsive">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className={cn(
+            "glass-card space-y-8 card-responsive",
+            isMobile ? "p-8 space-y-6" : ""
+          )}>
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <CheckCircle className="h-6 w-6 text-green-500" />
+              <span className={cn(
+                "premium-muted font-medium",
+                isMobile ? "text-sm" : "text-base"
+              )}>
+                No credit card required
               </span>
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className="glass-card p-8 group cursor-pointer"
-                style={{ animationDelay: `${index * 0.2}s` }}
-              >
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="h-4 w-4 text-yellow-400 fill-current"
-                    />
-                  ))}
-                </div>
-                <p className="text-white/80 mb-6 italic leading-relaxed">
-                  &quot;{testimonial.quote}&quot;
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-blue to-brand-indigo flex items-center justify-center text-white font-semibold text-sm">
-                    {testimonial.avatar}
-                  </div>
-                  <div>
-                    <p className="text-white font-semibold">
-                      {testimonial.author}
-                    </p>
-                    <p className="text-white/60 text-sm">{testimonial.role}</p>
-                    <p className="text-white/50 text-xs">
-                      {testimonial.company}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            <h2 className={cn(
+              "subheading-responsive font-bold premium-text",
+              isMobile ? "leading-tight" : ""
+            )}>
+              Ready to Get Started?
+            </h2>
 
-      {/* Final CTA */}
-      <section className="py-20 relative z-10">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <div className="glass-card p-12 relative overflow-hidden">
-            {/* Background Effects */}
-            <div className="absolute inset-0 bg-gradient-to-r from-brand-indigo/20 via-brand-blue/20 to-brand-orange/20 opacity-50"></div>
+            <p className={cn(
+              "premium-muted content-width-responsive mx-auto",
+              isMobile ? "text-sm px-4" : "premium-body-lg"
+            )}>
+              Join thousands of users who are already creating amazing polls.
+              Start for free and upgrade anytime.
+            </p>
 
-            <div className="relative z-10 space-y-8">
-              <h2 className="text-4xl md:text-5xl font-bold hero-gradient-text">
-                Ready to Transform Your Polls?
-              </h2>
-              <p className="text-xl text-white/70 max-w-2xl mx-auto">
-                Join thousands of teams already using our platform to make
-                better decisions together.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                {isAuthenticated ? (
-                  <Link href="/polls/new">
-                    <div className="floating-button px-8 py-4 text-lg font-semibold text-white flex items-center gap-3">
-                      <Plus className="h-6 w-6" />
-                      Create Your First Poll
-                      <ArrowRight className="h-6 w-6" />
-                    </div>
+            <div className={cn(
+              "flex gap-4 justify-center items-center pt-4",
+              isMobile ? "flex-col w-full" : "flex-row"
+            )}>
+              {!isAuthenticated ? (
+                <>
+                  <Link href="/auth/register" className={isMobile ? "w-full" : ""}>
+                    <Button
+                      variant="gradient"
+                      size={isMobile ? "default" : "lg"}
+                      className={cn("group", isMobile ? "w-full" : "")}
+                    >
+                      <Heart className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                      Create Free Account
+                      <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+                    </Button>
                   </Link>
-                ) : (
-                  <>
-                    <Link href="/auth/register">
-                      <div className="floating-button px-8 py-4 text-lg font-semibold text-white flex items-center gap-3">
-                        <Zap className="h-6 w-6" />
-                        Start Free Today
-                        <ArrowRight className="h-6 w-6" />
-                      </div>
-                    </Link>
-                    <Link href="/auth/login">
-                      <Button
-                        variant="ghost"
-                        size="lg"
-                        className="glass-button text-lg px-8 py-4 border-white/20 text-white hover:bg-white/10"
-                      >
-                        Sign In
-                      </Button>
-                    </Link>
-                  </>
-                )}
-              </div>
-
-              <p className="text-white/60 text-sm">
-                No credit card required • Free plan available • Setup in 30
-                seconds
-              </p>
+                  <Link href="/auth/login" className={isMobile ? "w-full" : ""}>
+                    <Button
+                      variant="glass"
+                      size={isMobile ? "default" : "lg"}
+                      className={cn(isMobile ? "w-full" : "")}
+                    >
+                      Sign In
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <Link href="/polls/new" className={isMobile ? "w-full" : ""}>
+                  <Button
+                    variant="gradient"
+                    size={isMobile ? "default" : "lg"}
+                    className={cn("group", isMobile ? "w-full" : "")}
+                  >
+                    <Plus className="h-5 w-5 group-hover:rotate-90 transition-transform duration-300" />
+                    Create Your First Poll
+                    <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>

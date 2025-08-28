@@ -14,11 +14,13 @@ import {
   BarChart3,
   Share2,
   Trash2,
-} from 'lucide-react'
+  Sparkles,
+} from '@/components/ui/icons'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useResponsive } from '@/hooks/use-responsive'
 import { cn, formatDate, calculatePercentage } from '@/lib/utils'
 import type { Poll, PollStatus } from '@/types'
 
@@ -163,10 +165,10 @@ const mockPolls: (Poll & { voteCount: number; status: PollStatus })[] = [
 ]
 
 const statusColors = {
-  active: 'bg-green-100 text-green-800 border-green-200',
-  expired: 'bg-red-100 text-red-800 border-red-200',
-  draft: 'bg-gray-100 text-gray-800 border-gray-200',
-  archived: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+  active: 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 border-green-200 dark:border-green-800',
+  expired: 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800',
+  draft: 'bg-muted text-muted-foreground border-border',
+  archived: 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800',
 }
 
 interface PollCardProps {
@@ -175,6 +177,8 @@ interface PollCardProps {
   onViewResults: (id: string) => void
   onShare: (id: string) => void
   onDelete: (id: string) => void
+  className?: string
+  style?: React.CSSProperties
 }
 
 function PollCard({
@@ -183,8 +187,11 @@ function PollCard({
   onViewResults,
   onShare,
   onDelete,
+  className,
+  style,
 }: PollCardProps) {
   const [showMenu, setShowMenu] = React.useState(false)
+  const { isMobile } = useResponsive()
   const topOption = poll.options.reduce(
     (max, option) => (option.voteCount > max.voteCount ? option : max),
     poll.options[0]
@@ -196,122 +203,200 @@ function PollCard({
   )
 
   return (
-    <Card className="hover:shadow-md transition-shadow duration-200">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="space-y-2 flex-1">
-            <div className="flex items-center gap-2">
+    <Card
+      variant="glass"
+      className={cn(
+        "hover:shadow-glow transition-all duration-300 hover:scale-[1.02] border-border/50 card-responsive",
+        className
+      )}
+      style={style}
+    >
+      <CardHeader className={cn(
+        "border-b border-border/30 bg-muted/5",
+        isMobile ? "p-4 pb-3" : "pb-3"
+      )}>
+        <div className="flex items-start justify-between gap-3">
+          <div className="space-y-2 flex-1 min-w-0">
+            <div className={cn(
+              "flex items-start gap-2",
+              isMobile ? "flex-col space-y-2" : "flex-row items-center"
+            )}>
               <CardTitle
-                className="text-lg leading-tight cursor-pointer hover:text-primary"
+                className={cn(
+                  "leading-tight cursor-pointer hover:premium-accent-text transition-colors duration-200 premium-text font-semibold flex-1",
+                  isMobile ? "text-base line-clamp-2" : "premium-heading-sm"
+                )}
                 onClick={() => onView(poll.id)}
               >
                 {poll.title}
               </CardTitle>
               <span
                 className={cn(
-                  'px-2 py-1 text-xs font-medium rounded-full border',
-                  statusColors[poll.status]
+                  'px-2.5 py-1 text-xs font-medium rounded-full border shadow-sm whitespace-nowrap',
+                  statusColors[poll.status],
+                  isMobile ? "self-start" : ""
                 )}
               >
                 {poll.status.charAt(0).toUpperCase() + poll.status.slice(1)}
               </span>
             </div>
             {poll.description && (
-              <p className="text-sm text-muted-foreground line-clamp-2">
+              <p className={cn(
+                "premium-muted line-clamp-2 leading-relaxed",
+                isMobile ? "text-xs" : "premium-body-sm"
+              )}>
                 {poll.description}
               </p>
             )}
+
+            {/* Quick Stats for Mobile */}
+            {isMobile && (
+              <div className="flex items-center gap-4 text-xs premium-muted">
+                <div className="flex items-center gap-1">
+                  <Users className="h-3 w-3" />
+                  <span>{poll.totalVotes} votes</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-3 w-3" />
+                  <span>{formatDate(poll.createdAt)}</span>
+                </div>
+              </div>
+            )}
           </div>
-          <div className="relative ml-2">
+
+          <div className="relative flex-shrink-0">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowMenu(!showMenu)}
-              className="h-8 w-8 p-0"
+              className={cn(
+                "hover:bg-muted/50 hover:scale-105 transition-all duration-200",
+                isMobile ? "p-1 h-7 w-7" : "p-1 h-8 w-8"
+              )}
             >
-              <MoreVertical className="h-4 w-4" />
+              <MoreVertical className={cn(isMobile ? "h-3 w-3" : "h-4 w-4")} />
             </Button>
+
             {showMenu && (
-              <div className="absolute right-0 top-8 bg-white rounded-md shadow-lg border py-1 w-32 z-10">
-                <button
-                  className="w-full px-3 py-1 text-left text-sm hover:bg-gray-50 flex items-center gap-2"
-                  onClick={() => {
-                    onView(poll.id)
-                    setShowMenu(false)
-                  }}
-                >
-                  <Eye className="h-3 w-3" />
-                  View
-                </button>
-                <button
-                  className="w-full px-3 py-1 text-left text-sm hover:bg-gray-50 flex items-center gap-2"
-                  onClick={() => {
-                    onViewResults(poll.id)
-                    setShowMenu(false)
-                  }}
-                >
-                  <BarChart3 className="h-3 w-3" />
-                  Results
-                </button>
-                <button
-                  className="w-full px-3 py-1 text-left text-sm hover:bg-gray-50 flex items-center gap-2"
-                  onClick={() => {
-                    onShare(poll.id)
-                    setShowMenu(false)
-                  }}
-                >
-                  <Share2 className="h-3 w-3" />
-                  Share
-                </button>
-                <button
-                  className="w-full px-3 py-1 text-left text-sm hover:bg-gray-50 flex items-center gap-2 text-red-600"
-                  onClick={() => {
-                    onDelete(poll.id)
-                    setShowMenu(false)
-                  }}
-                >
-                  <Trash2 className="h-3 w-3" />
-                  Delete
-                </button>
-              </div>
+              <>
+                {/* Backdrop */}
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setShowMenu(false)}
+                />
+
+                {/* Menu */}
+                <div className={cn(
+                  "absolute right-0 top-full mt-1 glass-card border border-border/50 shadow-xl z-20 animate-slide-down",
+                  isMobile ? "w-44 p-1" : "w-48 p-1"
+                )}>
+                  <button
+                    onClick={() => {
+                      onView(poll.id)
+                      setShowMenu(false)
+                    }}
+                    className={cn(
+                      "flex items-center gap-2 w-full px-3 py-2 hover:bg-muted/50 rounded-md transition-all duration-200 premium-text font-medium",
+                      isMobile ? "text-xs" : "text-sm"
+                    )}
+                  >
+                    <Eye className="h-4 w-4 text-blue-500" />
+                    View Poll
+                  </button>
+                  <button
+                    onClick={() => {
+                      onViewResults(poll.id)
+                      setShowMenu(false)
+                    }}
+                    className={cn(
+                      "flex items-center gap-2 w-full px-3 py-2 hover:bg-muted/50 rounded-md transition-all duration-200 premium-text font-medium",
+                      isMobile ? "text-xs" : "text-sm"
+                    )}
+                  >
+                    <BarChart3 className="h-4 w-4 text-green-500" />
+                    View Results
+                  </button>
+                  <button
+                    onClick={() => {
+                      onShare(poll.id)
+                      setShowMenu(false)
+                    }}
+                    className={cn(
+                      "flex items-center gap-2 w-full px-3 py-2 hover:bg-muted/50 rounded-md transition-all duration-200 premium-text font-medium",
+                      isMobile ? "text-xs" : "text-sm"
+                    )}
+                  >
+                    <Share2 className="h-4 w-4 text-purple-500" />
+                    Share Poll
+                  </button>
+                  <hr className="my-1 border-border/30" />
+                  <button
+                    onClick={() => {
+                      onDelete(poll.id)
+                      setShowMenu(false)
+                    }}
+                    className={cn(
+                      "flex items-center gap-2 w-full px-3 py-2 text-destructive hover:bg-destructive/10 rounded-md transition-all duration-200 font-medium",
+                      isMobile ? "text-xs" : "text-sm"
+                    )}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Delete Poll
+                  </button>
+                </div>
+              </>
             )}
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="pt-0">
-        <div className="space-y-4">
-          {/* Stats */}
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1">
-                <Users className="h-4 w-4" />
-                <span>{poll.totalVotes} votes</span>
+      <CardContent className={cn(
+        "pt-0",
+        isMobile ? "p-4 pt-0" : ""
+      )}>
+        <div className={cn("space-y-4", isMobile ? "space-y-3" : "")}>
+          {/* Stats - Hidden on mobile since shown in header */}
+          {!isMobile && (
+            <div className="flex items-center justify-between premium-body-sm premium-muted">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1">
+                  <Users className="h-4 w-4" />
+                  <span>{poll.totalVotes} votes</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-4 w-4" />
+                  <span>{formatDate(poll.createdAt)}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-1">
-                <Calendar className="h-4 w-4" />
-                <span>{formatDate(poll.createdAt)}</span>
-              </div>
+              {poll.expiresAt && (
+                <div className="flex items-center gap-1 text-orange-500">
+                  <Calendar className="h-4 w-4" />
+                  <span>Expires: {formatDate(poll.expiresAt)}</span>
+                </div>
+              )}
             </div>
-            {poll.expiresAt && (
-              <div className="flex items-center gap-1">
-                <span>Expires: {formatDate(poll.expiresAt)}</span>
-              </div>
-            )}
-          </div>
+          )}
 
           {/* Leading option preview */}
           {poll.totalVotes > 0 && (
             <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="font-medium">Leading: {topOption.text}</span>
-                <span className="text-muted-foreground">
+              <div className="flex justify-between items-center">
+                <span className={cn(
+                  "font-medium premium-text truncate",
+                  isMobile ? "text-sm" : "premium-body-sm"
+                )}>
+                  Leading: {topOption.text}
+                </span>
+                <span className={cn(
+                  "premium-muted font-semibold",
+                  isMobile ? "text-sm" : "premium-body-sm"
+                )}>
                   {topOptionPercentage}%
                 </span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-muted rounded-full h-2 overflow-hidden shadow-inner">
                 <div
-                  className="bg-primary h-2 rounded-full transition-all duration-300"
+                  className="bg-gradient-to-r from-primary via-brand-accent to-primary/90 h-2 rounded-full transition-all duration-700 shadow-glow-sm"
                   style={{ width: `${topOptionPercentage}%` }}
                 />
               </div>
@@ -319,26 +404,53 @@ function PollCard({
           )}
 
           {/* Action buttons */}
-          <div className="flex gap-2">
+          <div className={cn(
+            "flex gap-2",
+            isMobile ? "flex-col" : ""
+          )}>
             <Button
-              variant="outline"
-              size="sm"
+              variant="glass"
+              size={isMobile ? "sm" : "sm"}
               onClick={() => onView(poll.id)}
-              className="flex-1"
+              className={cn(
+                "group hover:scale-105 transition-all duration-200",
+                isMobile ? "w-full" : "flex-1"
+              )}
             >
-              <Eye className="h-4 w-4 mr-1" />
+              <Eye className="h-4 w-4 mr-1 group-hover:scale-110 transition-transform duration-200" />
               View
             </Button>
             <Button
-              variant="outline"
-              size="sm"
+              variant="glass"
+              size={isMobile ? "sm" : "sm"}
               onClick={() => onViewResults(poll.id)}
-              className="flex-1"
+              className={cn(
+                "group hover:scale-105 transition-all duration-200",
+                isMobile ? "w-full" : "flex-1"
+              )}
             >
-              <TrendingUp className="h-4 w-4 mr-1" />
+              <TrendingUp className="h-4 w-4 mr-1 group-hover:scale-110 transition-transform duration-200" />
               Results
             </Button>
+            {!isMobile && (
+              <Button
+                variant="glass"
+                size="sm"
+                onClick={() => onShare(poll.id)}
+                className="group hover:scale-105 transition-all duration-200 px-3"
+              >
+                <Share2 className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
+              </Button>
+            )}
           </div>
+
+          {/* Mobile expiry info */}
+          {isMobile && poll.expiresAt && (
+            <div className="flex items-center gap-2 text-xs premium-muted bg-muted/20 px-3 py-2 rounded-lg">
+              <Calendar className="h-3 w-3 text-orange-500" />
+              <span>Expires: {formatDate(poll.expiresAt)}</span>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
@@ -353,6 +465,12 @@ export default function PollsPage() {
     'all'
   )
   const [showFilters, setShowFilters] = React.useState(false)
+  const [mounted, setMounted] = React.useState(false)
+  const { isMobile, isTablet } = useResponsive()
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Filter polls based on search and status
   React.useEffect(() => {
@@ -420,124 +538,228 @@ export default function PollsPage() {
   const totalVotes = polls.reduce((sum, poll) => sum + poll.totalVotes, 0)
   const activePolls = polls.filter(poll => poll.status === 'active').length
 
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary/20 border-t-primary mx-auto"></div>
+          <p className="premium-body-sm premium-muted">Loading your polls...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-background text-foreground section-padding-responsive">
+      {/* Enhanced Background Pattern */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-muted/20"></div>
+        {!isMobile && (
+          <>
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/8 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-brand-accent/8 rounded-full blur-3xl animate-pulse animation-delay-2000"></div>
+            <div className="absolute top-1/2 left-3/4 w-64 h-64 bg-brand-blue/6 rounded-full blur-3xl animate-pulse animation-delay-4000"></div>
+          </>
+        )}
+      </div>
+
+      <div className="container-responsive relative z-10">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">My Polls</h1>
-              <p className="text-muted-foreground mt-2">
+        <div className={cn("mb-8", isMobile ? "mb-6" : "")}>
+          <div className={cn(
+            "flex gap-4 mb-6",
+            isMobile ? "flex-col" : "flex-col sm:flex-row sm:justify-between sm:items-center"
+          )}>
+            <div className={cn(isMobile ? "text-center" : "")}>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 bg-gradient-to-br from-primary to-brand-accent rounded-lg shadow-glow-sm">
+                  <BarChart3 className={cn(
+                    "text-white",
+                    isMobile ? "h-5 w-5" : "h-6 w-6"
+                  )} />
+                </div>
+                <h1 className={cn(
+                  "font-bold premium-text",
+                  isMobile ? "text-2xl" : "premium-heading-lg"
+                )}>My Polls</h1>
+                <Sparkles className="h-5 w-5 text-primary animate-pulse" />
+              </div>
+              <p className={cn(
+                "premium-muted leading-relaxed",
+                isMobile ? "text-sm" : "premium-body"
+              )}>
                 Manage and track your polls, view results, and create new ones.
               </p>
             </div>
-            <Link href="/polls/new">
-              <Button size="lg" className="shadow-sm">
-                <Plus className="h-5 w-5 mr-2" />
-                Create Poll
+            <Link href="/polls/new" className={cn(isMobile ? "w-full" : "w-full sm:w-auto")}>
+              <Button
+                variant="gradient"
+                size={isMobile ? "default" : "lg"}
+                className={cn(
+                  "group hover:scale-105 transition-all duration-300 shadow-glow-sm hover:shadow-glow",
+                  isMobile ? "w-full" : "w-full sm:w-auto"
+                )}
+              >
+                <Plus className="h-5 w-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
+                Create New Poll
               </Button>
             </Link>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">
-                      Total Polls
-                    </p>
-                    <p className="text-2xl font-bold">{polls.length}</p>
-                  </div>
-                  <div className="p-2 bg-blue-100 rounded-full">
-                    <BarChart3 className="h-5 w-5 text-blue-600" />
-                  </div>
+          {/* Enhanced Stats Cards */}
+          <div className={cn(
+            "grid gap-4 mb-6",
+            isMobile ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-3"
+          )}>
+            <div className="glass-card card-responsive card-glow hover:scale-105 transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={cn(
+                    "premium-muted font-medium",
+                    isMobile ? "text-xs" : "premium-body-sm"
+                  )}>
+                    Total Polls
+                  </p>
+                  <p className={cn(
+                    "premium-text font-bold",
+                    isMobile ? "text-xl" : "premium-heading-md"
+                  )}>{polls.length}</p>
                 </div>
-              </CardContent>
-            </Card>
+                <div className={cn(
+                  "bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl shadow-glow-sm",
+                  isMobile ? "p-2" : "p-3"
+                )}>
+                  <BarChart3 className={cn(
+                    "text-blue-500 dark:text-blue-400",
+                    isMobile ? "h-5 w-5" : "h-6 w-6"
+                  )} />
+                </div>
+              </div>
+            </div>
 
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">
-                      Total Votes
-                    </p>
-                    <p className="text-2xl font-bold">{totalVotes}</p>
-                  </div>
-                  <div className="p-2 bg-green-100 rounded-full">
-                    <Users className="h-5 w-5 text-green-600" />
-                  </div>
+            <div className="glass-card card-responsive card-glow hover:scale-105 transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={cn(
+                    "premium-muted font-medium",
+                    isMobile ? "text-xs" : "premium-body-sm"
+                  )}>
+                    Total Votes
+                  </p>
+                  <p className={cn(
+                    "premium-text font-bold",
+                    isMobile ? "text-xl" : "premium-heading-md"
+                  )}>{totalVotes.toLocaleString()}</p>
                 </div>
-              </CardContent>
-            </Card>
+                <div className={cn(
+                  "bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-xl shadow-glow-sm",
+                  isMobile ? "p-2" : "p-3"
+                )}>
+                  <Users className={cn(
+                    "text-green-500 dark:text-green-400",
+                    isMobile ? "h-5 w-5" : "h-6 w-6"
+                  )} />
+                </div>
+              </div>
+            </div>
 
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">
-                      Active Polls
-                    </p>
-                    <p className="text-2xl font-bold">{activePolls}</p>
-                  </div>
-                  <div className="p-2 bg-orange-100 rounded-full">
-                    <TrendingUp className="h-5 w-5 text-orange-600" />
-                  </div>
+            <div className="glass-card card-responsive card-glow hover:scale-105 transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={cn(
+                    "premium-muted font-medium",
+                    isMobile ? "text-xs" : "premium-body-sm"
+                  )}>
+                    Active Polls
+                  </p>
+                  <p className={cn(
+                    "premium-text font-bold",
+                    isMobile ? "text-xl" : "premium-heading-md"
+                  )}>{activePolls}</p>
                 </div>
-              </CardContent>
-            </Card>
+                <div className={cn(
+                  "bg-gradient-to-br from-orange-500/20 to-orange-600/20 rounded-xl shadow-glow-sm",
+                  isMobile ? "p-2" : "p-3"
+                )}>
+                  <TrendingUp className={cn(
+                    "text-orange-500 dark:text-orange-400",
+                    isMobile ? "h-5 w-5" : "h-6 w-6"
+                  )} />
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Search and Filters */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          {/* Enhanced Search and Filters */}
+          <div className={cn(
+            "flex gap-4 mb-6",
+            isMobile ? "flex-col" : "flex-col sm:flex-row"
+          )}>
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 premium-muted" />
               <Input
-                placeholder="Search polls..."
+                placeholder="Search polls by title or description..."
                 value={searchQuery}
+                variant="glass"
+                inputSize={isMobile ? "sm" : "md"}
+                className="pl-10 focus-enhanced"
                 onChange={e => setSearchQuery(e.target.value)}
-                className="pl-10"
               />
             </div>
             <div className="flex gap-2">
               <Button
-                variant="outline"
-                size="sm"
+                variant={showFilters ? "default" : "glass"}
+                size={isMobile ? "sm" : "sm"}
                 onClick={() => setShowFilters(!showFilters)}
-                className="whitespace-nowrap"
+                className={cn(
+                  "whitespace-nowrap hover:scale-105 transition-all duration-200",
+                  isMobile ? "flex-1" : ""
+                )}
               >
                 <Filter className="h-4 w-4 mr-2" />
                 Filters
+                {showFilters && <span className="ml-1">✓</span>}
               </Button>
             </div>
           </div>
 
-          {/* Filter Options */}
+          {/* Enhanced Filter Options */}
           {showFilters && (
-            <Card className="mb-6">
-              <CardContent className="p-4">
+            <Card variant="glass" className="mb-6 animate-slide-down border-border/50 hover:shadow-glow-sm transition-all duration-300">
+              <CardContent className={cn(
+                isMobile ? "p-4" : "p-6"
+              )}>
                 <div className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium mb-2 block">
-                      Status
+                    <label className={cn(
+                      "font-semibold mb-3 premium-text flex items-center gap-2",
+                      isMobile ? "text-sm" : "premium-body-sm"
+                    )}>
+                      <Filter className="h-4 w-4" />
+                      Filter by Status
                     </label>
-                    <div className="flex flex-wrap gap-2">
+                    <div className={cn(
+                      "flex gap-2",
+                      isMobile ? "flex-col" : "flex-wrap"
+                    )}>
                       {['all', 'active', 'expired', 'draft', 'archived'].map(
                         status => (
                           <Button
                             key={status}
                             variant={
-                              statusFilter === status ? 'default' : 'outline'
+                              statusFilter === status ? 'gradient' : 'glass'
                             }
-                            size="sm"
+                            size={isMobile ? "sm" : "sm"}
                             onClick={() =>
                               setStatusFilter(status as PollStatus | 'all')
                             }
+                            className={cn(
+                              "hover:scale-105 transition-all duration-200",
+                              isMobile ? "w-full" : "flex-1"
+                            )}
                           >
                             {status.charAt(0).toUpperCase() + status.slice(1)}
+                            {statusFilter === status && <span className="ml-2">✓</span>}
                           </Button>
                         )
                       )}
@@ -549,10 +771,13 @@ export default function PollsPage() {
           )}
         </div>
 
-        {/* Polls Grid */}
+        {/* Enhanced Polls Grid */}
         {filteredPolls.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {filteredPolls.map(poll => (
+          <div className={cn(
+            "grid gap-6 stagger-fade-in",
+            isMobile ? "grid-cols-1" : isTablet ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+          )}>
+            {filteredPolls.map((poll, index) => (
               <PollCard
                 key={poll.id}
                 poll={poll}
@@ -560,29 +785,61 @@ export default function PollsPage() {
                 onViewResults={handleViewResults}
                 onShare={handleShare}
                 onDelete={handleDelete}
+                className="animate-fade-in"
+                style={{ animationDelay: `${index * 100}ms` }}
               />
             ))}
           </div>
         ) : (
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <div className="text-center space-y-2">
-                <BarChart3 className="h-12 w-12 text-muted-foreground mx-auto" />
-                <h3 className="text-lg font-semibold">
-                  {searchQuery || statusFilter !== 'all'
-                    ? 'No polls match your criteria'
-                    : 'No polls yet'}
-                </h3>
-                <p className="text-muted-foreground max-w-md">
-                  {searchQuery || statusFilter !== 'all'
-                    ? "Try adjusting your search or filters to find what you're looking for."
-                    : 'Create your first poll to get started and begin collecting responses from your audience.'}
-                </p>
+          <Card variant="glass" className="border-border/50 hover:shadow-glow-sm transition-all duration-300">
+            <CardContent className={cn(
+              "flex flex-col items-center justify-center text-center",
+              isMobile ? "py-12 px-4" : "py-16 px-8"
+            )}>
+              <div className={cn(
+                "space-y-4",
+                isMobile ? "max-w-sm space-y-3" : "max-w-md space-y-4"
+              )}>
+                <div className={cn(
+                  "bg-gradient-to-br from-primary/20 to-brand-accent/20 rounded-2xl w-fit mx-auto shadow-glow-sm",
+                  isMobile ? "p-3" : "p-4"
+                )}>
+                  <BarChart3 className={cn(
+                    "text-primary mx-auto",
+                    isMobile ? "h-8 w-8" : "h-12 w-12"
+                  )} />
+                </div>
+                <div className="space-y-2">
+                  <h3 className={cn(
+                    "font-bold premium-text",
+                    isMobile ? "text-lg" : "premium-heading-md"
+                  )}>
+                    {searchQuery || statusFilter !== 'all'
+                      ? 'No polls match your criteria'
+                      : 'No polls yet'}
+                  </h3>
+                  <p className={cn(
+                    "premium-muted leading-relaxed",
+                    isMobile ? "text-sm" : "premium-body"
+                  )}>
+                    {searchQuery || statusFilter !== 'all'
+                      ? "Try adjusting your search or filters to find what you're looking for."
+                      : 'Create your first poll to get started and begin collecting responses from your audience.'}
+                  </p>
+                </div>
                 {!searchQuery && statusFilter === 'all' && (
-                  <Link href="/polls/new">
-                    <Button className="mt-4">
-                      <Plus className="h-4 w-4 mr-2" />
+                  <Link href="/polls/new" className={cn(isMobile ? "w-full" : "")}>
+                    <Button
+                      variant="gradient"
+                      size={isMobile ? "default" : "lg"}
+                      className={cn(
+                        "mt-6 group hover:scale-105 transition-all duration-300 shadow-glow-sm hover:shadow-glow",
+                        isMobile ? "w-full" : ""
+                      )}
+                    >
+                      <Plus className="h-5 w-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
                       Create Your First Poll
+                      <Sparkles className="h-4 w-4 ml-2 animate-pulse" />
                     </Button>
                   </Link>
                 )}

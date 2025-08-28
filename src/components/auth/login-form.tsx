@@ -4,7 +4,7 @@ import * as React from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Eye, EyeOff, LogIn, Mail, Lock } from 'lucide-react'
+import { Eye, EyeOff, LogIn, Mail, Lock } from '@/components/ui/icons'
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
@@ -95,7 +95,7 @@ export function LoginForm({
   }
 
   return (
-    <Card className={cn('w-full max-w-md mx-auto', className)}>
+    <Card variant="glass" className={cn('w-full max-w-md mx-auto', className)}>
       <CardHeader className="space-y-1 text-center">
         <div className="flex justify-center mb-2">
           <div className="p-3 rounded-full bg-primary/10">

@@ -2,12 +2,12 @@
 
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { PollForm } from '@/components/polls/poll-form'
 import { QRCodeCard } from '@/components/ui/qr-code-card'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, CheckCircle } from 'lucide-react'
-import Link from 'next/link'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { ArrowLeft, CheckCircle } from '@/components/ui/icons'
 import type { CreatePollData } from '@/types'
 
 export default function NewPollPage() {

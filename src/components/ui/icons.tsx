@@ -566,3 +566,148 @@ export const ExternalLink = ({ size = 24, ...props }: IconProps) => (
     <line x1="10" y1="14" x2="21" y2="3" />
   </svg>
 )
+
+export const Sparkles = ({ size = 24, ...props }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M12 3l1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z" />
+    <path d="M5 3v4" />
+    <path d="M19 17v4" />
+    <path d="M3 5h4" />
+    <path d="M17 19h4" />
+  </svg>
+)
+
+export const Rocket = ({ size = 24, ...props }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M4.5 16.5c-1.5 1.5-2 4.5-2 4.5s3-0.5 4.5-2 1.5-2 1.5-2-0.5 0.5-4-2Z" />
+    <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2Z" />
+    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+    <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+  </svg>
+)
+
+export const Heart = ({ size = 24, ...props }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+  </svg>
+)
+
+export const Github = ({ size = 24, ...props }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+  </svg>
+)
+
+export const Twitter = ({ size = 24, ...props }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
+  </svg>
+)
+
+export const Linkedin = ({ size = 24, ...props }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+    <rect x="2" y="9" width="4" height="12" />
+    <circle cx="4" cy="4" r="2" />
+  </svg>
+)
+
+export const Sun = ({ size = 24, ...props }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <circle cx="12" cy="12" r="5" />
+    <line x1="12" y1="1" x2="12" y2="3" />
+    <line x1="12" y1="21" x2="12" y2="23" />
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+    <line x1="1" y1="12" x2="3" y2="12" />
+    <line x1="21" y1="12" x2="23" y2="12" />
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+  </svg>
+)
+
+export const Moon = ({ size = 24, ...props }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </svg>
+)

@@ -1,28 +1,30 @@
 'use client'
 
+import * as React from 'react'
 import Link from 'next/link'
-import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { BarChart3, User, LogOut, Menu, X } from 'lucide-react'
+import { BarChart3, Menu, X, User, Plus, TrendingUp } from '@/components/ui/icons'
+import { useResponsive } from '@/hooks/use-responsive'
+import { cn } from '@/lib/utils'
 
 export function Navigation() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false)
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false)
+  const [mounted, setMounted] = React.useState(false)
+  const { isMobile, isTablet } = useResponsive()
 
-  // Check authentication status on client-side
   React.useEffect(() => {
+    setMounted(true)
     if (typeof window !== 'undefined') {
       setIsAuthenticated(localStorage.getItem('isAuthenticated') === 'true')
     }
   }, [])
 
-  const handleLogout = () => {
+  const handleSignOut = () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('isAuthenticated')
       localStorage.removeItem('userEmail')
-      localStorage.removeItem('username')
       setIsAuthenticated(false)
-      window.location.href = '/'
     }
   }
 
@@ -30,158 +32,278 @@ export function Navigation() {
     setIsMenuOpen(!isMenuOpen)
   }
 
+  // Close menu when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const nav = document.querySelector('nav')
+      if (nav && !nav.contains(event.target as Node)) {
+        setIsMenuOpen(false)
+      }
+    }
+
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isMenuOpen])
+
+  // Close menu on escape key
+  React.useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsMenuOpen(false)
+      }
+    }
+
+    if (isMenuOpen) {
+      document.addEventListener('keydown', handleEscape)
+      return () => document.removeEventListener('keydown', handleEscape)
+    }
+  }, [isMenuOpen])
+
+  if (!mounted) {
+    return (
+      <nav className="nav-glass">
+        <div className="max-w-7xl mx-auto responsive-padding">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-primary/20 rounded-lg animate-pulse"></div>
+              <div className="w-20 h-6 bg-primary/20 rounded animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    )
+  }
+
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <nav className="nav-glass sticky top-0 z-50 backdrop-blur-lg">
+      <div className="container-responsive">
+        <div className={cn(
+          "flex justify-between items-center",
+          isMobile ? "h-14" : isTablet ? "h-16" : "h-18"
+        )}>
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+            className={cn(
+              "flex items-center gap-2 hover:opacity-80 transition-all duration-300 group focus-enhanced",
+              isMobile ? "gap-1.5" : "gap-2"
+            )}
           >
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <BarChart3 className="h-6 w-6 text-primary" />
+            <div className={cn(
+              "bg-gradient-to-br from-primary via-brand-blue to-brand-accent rounded-lg shadow-glow-sm group-hover:shadow-glow transition-all duration-300",
+              isMobile ? "p-1.5" : "p-2"
+            )}>
+              <BarChart3 className={cn(
+                "text-white group-hover:scale-110 transition-transform duration-300",
+                isMobile ? "h-5 w-5" : "h-6 w-6"
+              )} />
             </div>
-            <span className="text-xl font-bold text-gray-900">Poll App</span>
+            <span className={cn(
+              "font-bold premium-text group-hover:premium-accent-text transition-colors duration-300",
+              isMobile ? "text-lg" : isTablet ? "text-xl" : "text-2xl"
+            )}>
+              Poll App
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className={cn(
+            "items-center space-x-1",
+            isMobile ? "hidden" : isTablet ? "hidden md:flex md:space-x-4" : "hidden lg:flex lg:space-x-6"
+          )}>
+            <Link
+              href="/"
+              className="premium-muted hover:premium-text hover:bg-muted/50 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 focus-enhanced"
+            >
+              <BarChart3 className="h-4 w-4" />
+              <span className={isTablet ? "hidden xl:inline" : ""}>Home</span>
+            </Link>
             <Link
               href="/polls"
-              className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors"
+              className="premium-muted hover:premium-text hover:bg-muted/50 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 focus-enhanced"
             >
-              My Polls
+              <BarChart3 className="h-4 w-4" />
+              <span className={isTablet ? "hidden xl:inline" : ""}>My Polls</span>
             </Link>
             <Link
               href="/polls/new"
-              className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors"
+              className="premium-muted hover:premium-text hover:bg-muted/50 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 focus-enhanced"
             >
-              Create Poll
+              <Plus className="h-4 w-4" />
+              <span className={isTablet ? "hidden xl:inline" : ""}>Create</span>
             </Link>
             <Link
               href="/explore"
-              className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors"
+              className="premium-muted hover:premium-text hover:bg-muted/50 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 focus-enhanced"
             >
-              Explore
+              <TrendingUp className="h-4 w-4" />
+              <span className={isTablet ? "hidden xl:inline" : ""}>Explore</span>
             </Link>
           </div>
 
           {/* Desktop Auth Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className={cn(
+            "items-center",
+            isMobile ? "hidden" : isTablet ? "hidden md:flex md:space-x-2" : "hidden lg:flex lg:space-x-4"
+          )}>
             {isAuthenticated ? (
               <div className="flex items-center space-x-3">
-                <div className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-700">
+                <div className={cn(
+                  "flex items-center space-x-2 px-3 py-2 text-sm premium-muted bg-muted/30 rounded-lg",
+                  isTablet && "hidden lg:flex"
+                )}>
                   <User className="h-4 w-4" />
                   <span>Welcome back!</span>
                 </div>
                 <Button
                   variant="outline"
-                  size="sm"
-                  onClick={handleLogout}
-                  className="flex items-center gap-2"
+                  size={isTablet ? "sm" : "default"}
+                  onClick={handleSignOut}
+                  className="flex items-center gap-2 focus-enhanced"
                 >
-                  <LogOut className="h-4 w-4" />
-                  Logout
+                  <User className="h-4 w-4" />
+                  <span className={isTablet ? "hidden xl:inline" : ""}>Sign Out</span>
                 </Button>
               </div>
             ) : (
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2">
                 <Link href="/auth/login">
-                  <Button variant="ghost" size="sm">
-                    Sign In
+                  <Button
+                    variant="ghost"
+                    size={isTablet ? "sm" : "default"}
+                    className="focus-enhanced"
+                  >
+                    <span className={isTablet ? "hidden lg:inline" : ""}>Sign In</span>
+                    <User className={cn("h-4 w-4", isTablet ? "lg:hidden" : "hidden")} />
                   </Button>
                 </Link>
                 <Link href="/auth/register">
-                  <Button size="sm">Get Started</Button>
+                  <Button
+                    variant="gradient"
+                    size={isTablet ? "sm" : "default"}
+                    className="focus-enhanced"
+                  >
+                    <span className={isTablet ? "hidden lg:inline" : ""}>Get Started</span>
+                    <Plus className={cn("h-4 w-4", isTablet ? "lg:hidden" : "hidden")} />
+                  </Button>
                 </Link>
               </div>
             )}
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className={cn(
+            isMobile ? "flex" : isTablet ? "flex md:hidden" : "flex lg:hidden"
+          )}>
             <Button
               variant="ghost"
               size="sm"
               onClick={toggleMenu}
-              className="p-2"
+              className="p-2 focus-enhanced"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMenuOpen}
             >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
+              <div className="relative w-6 h-6">
+                <Menu className={cn(
+                  "h-6 w-6 absolute transition-all duration-300",
+                  isMenuOpen ? "rotate-180 opacity-0" : "rotate-0 opacity-100"
+                )} />
+                <X className={cn(
+                  "h-6 w-6 absolute transition-all duration-300",
+                  isMenuOpen ? "rotate-0 opacity-100" : "-rotate-180 opacity-0"
+                )} />
+              </div>
             </Button>
           </div>
         </div>
       </div>
 
       {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="md:hidden border-t border-gray-200 bg-white">
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            <Link
-              href="/polls"
-              className="text-gray-700 hover:text-primary block px-3 py-2 text-base font-medium transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              My Polls
-            </Link>
-            <Link
-              href="/polls/new"
-              className="text-gray-700 hover:text-primary block px-3 py-2 text-base font-medium transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Create Poll
-            </Link>
-            <Link
-              href="/explore"
-              className="text-gray-700 hover:text-primary block px-3 py-2 text-base font-medium transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Explore
-            </Link>
-          </div>
-
-          {/* Mobile Auth Section */}
-          <div className="pt-4 pb-3 border-t border-gray-200">
-            {isAuthenticated ? (
-              <div className="px-2">
-                <div className="flex items-center px-3 py-2 text-base text-gray-700 mb-2">
-                  <User className="h-5 w-5 mr-3" />
-                  <span>Welcome back!</span>
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleLogout}
-                  className="w-full flex items-center justify-center gap-2"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Logout
-                </Button>
-              </div>
-            ) : (
-              <div className="px-2 space-y-2">
-                <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="ghost" size="sm" className="w-full">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link
-                  href="/auth/register"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Button size="sm" className="w-full">
-                    Get Started
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </div>
+      <div className={cn(
+        "border-t border-border/50 bg-background/98 backdrop-blur-xl transition-all duration-300 ease-in-out overflow-hidden",
+        isMobile ? "md:hidden" : isTablet ? "md:hidden" : "lg:hidden",
+        isMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+      )}>
+        <div className="px-4 py-4 space-y-2">
+          {/* Navigation Links */}
+          <Link
+            href="/"
+            className="flex items-center gap-3 px-4 py-3 premium-muted hover:premium-text text-sm font-medium transition-all duration-200 rounded-xl hover:bg-muted/50 focus-enhanced"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <BarChart3 className="h-5 w-5" />
+            <span>Home</span>
+          </Link>
+          <Link
+            href="/polls"
+            className="flex items-center gap-3 px-4 py-3 premium-muted hover:premium-text text-sm font-medium transition-all duration-200 rounded-xl hover:bg-muted/50 focus-enhanced"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <BarChart3 className="h-5 w-5" />
+            <span>My Polls</span>
+          </Link>
+          <Link
+            href="/polls/new"
+            className="flex items-center gap-3 px-4 py-3 premium-muted hover:premium-text text-sm font-medium transition-all duration-200 rounded-xl hover:bg-muted/50 focus-enhanced"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <Plus className="h-5 w-5" />
+            <span>Create Poll</span>
+          </Link>
+          <Link
+            href="/explore"
+            className="flex items-center gap-3 px-4 py-3 premium-muted hover:premium-text text-sm font-medium transition-all duration-200 rounded-xl hover:bg-muted/50 focus-enhanced"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <TrendingUp className="h-5 w-5" />
+            <span>Explore</span>
+          </Link>
         </div>
-      )}
+
+        {/* Mobile Auth Section */}
+        <div className="px-4 pb-4 pt-2 border-t border-border/30 bg-muted/10">
+          {isAuthenticated ? (
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 px-4 py-3 text-sm premium-muted bg-muted/40 rounded-xl">
+                <User className="h-5 w-5" />
+                <span>Welcome back!</span>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  handleSignOut()
+                  setIsMenuOpen(false)
+                }}
+                className="w-full flex items-center justify-center gap-2 focus-enhanced"
+              >
+                <User className="h-4 w-4" />
+                Sign Out
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
+                <Button variant="ghost" size="sm" className="w-full focus-enhanced">
+                  <User className="h-4 w-4 mr-2" />
+                  Sign In
+                </Button>
+              </Link>
+              <Link
+                href="/auth/register"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Button variant="gradient" size="sm" className="w-full focus-enhanced">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Get Started
+                </Button>
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
     </nav>
   )
 }
