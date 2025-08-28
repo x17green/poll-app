@@ -2,8 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Navigation } from '@/components/navigation'
 import { Footer } from '@/components/footer'
-import { ThemeProvider } from '@/contexts/theme-context'
-import { ThemeToggle } from '@/components/ui/theme-toggle'
+import { ThemeProvider, ThemeToggle } from '@/contexts/ThemeContext'
 import './globals.css'
 
 const inter = Inter({

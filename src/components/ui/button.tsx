@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
+import { useResponsive } from '@/hooks/use-responsive'
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 relative overflow-hidden group',
@@ -61,6 +62,9 @@ export interface ButtonProps
   leftIcon?: React.ReactNode
   rightIcon?: React.ReactNode
   ripple?: boolean
+  responsive?: boolean
+  fullWidth?: boolean
+  wrapperClassName?: string
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -78,10 +82,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       children,
       onClick,
+      responsive = false,
+      fullWidth = false,
+      wrapperClassName,
       ...props
     },
     ref
   ) => {
+    const { isMobile, isTablet } = useResponsive()
     const [rippleArray, setRippleArray] = React.useState<
       Array<{ x: number; y: number; key: number }>
     >([])
@@ -170,10 +178,20 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       </>
     )
 
+    // Common class names for both button and div
+    const buttonClasses = cn(
+      buttonVariants({ variant, size, rounded }),
+      responsive && 'btn-responsive',
+      fullWidth && 'w-full',
+      isMobile && responsive && 'px-3 py-2 text-sm',
+      isTablet && responsive && !isMobile && 'px-4 py-2',
+      className
+    )
+
     if (asChild) {
       return (
         <div
-          className={cn(buttonVariants({ variant, size, rounded, className }))}
+          className={cn(buttonClasses, wrapperClassName)}
         >
           {buttonContent}
         </div>
@@ -182,7 +200,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <button
-        className={cn(buttonVariants({ variant, size, rounded, className }))}
+        className={buttonClasses}
         ref={ref}
         disabled={loading || disabled}
         onClick={handleClick}

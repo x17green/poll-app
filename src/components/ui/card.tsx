@@ -15,9 +15,16 @@ const cardVariants = cva(
         gradient: 'bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20 shadow-sm',
         outline: 'border-2 border-dashed border-border bg-transparent hover:bg-muted/50',
       },
+      size: {
+        sm: 'p-3',
+        md: 'p-4',
+        lg: 'p-6',
+        xl: 'p-8',
+      } as const,
     },
     defaultVariants: {
       variant: 'default',
+      size: 'md',
     },
   }
 )
@@ -26,20 +33,32 @@ export interface CardProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof cardVariants> {
   hover?: boolean
+  responsive?: boolean
 }
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, variant, hover = false, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(
-        cardVariants({ variant }),
-        hover && 'hover:scale-105 hover:shadow-glow cursor-pointer',
-        className
-      )}
-      {...props}
-    />
-  )
+  ({
+    className,
+    variant,
+    size,
+    hover = false,
+    responsive = false,
+    ...props
+  }, ref) => {
+
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          cardVariants({ variant, size }),
+          hover && 'hover:scale-105 hover:shadow-glow cursor-pointer',
+          responsive && 'card-responsive',
+          className
+        )}
+        {...props}
+      />
+    )
+  }
 )
 Card.displayName = 'Card'
 
@@ -96,7 +115,7 @@ const CardFooter = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('flex items-center p-6 pt-0', className)}
+    className={cn('flex items-center justify-between flex-wrap gap-4 p-6 pt-0', className)}
     {...props}
   />
 ))

@@ -5,13 +5,15 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { BarChart3, Menu, X, User, Plus, TrendingUp } from '@/components/ui/icons'
 import { useResponsive } from '@/hooks/use-responsive'
+import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 
 export function Navigation() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false)
   const [isMenuOpen, setIsMenuOpen] = React.useState(false)
   const [mounted, setMounted] = React.useState(false)
-  const { isMobile, isTablet } = useResponsive()
+  const { isMobile, isTablet, isDesktop } = useResponsive()
+  const { theme } = useTheme()
 
   React.useEffect(() => {
     setMounted(true)
@@ -81,7 +83,8 @@ export function Navigation() {
       <div className="container-responsive">
         <div className={cn(
           "flex justify-between items-center",
-          isMobile ? "h-14" : isTablet ? "h-16" : "h-18"
+          isMobile ? "h-14" : isTablet ? "h-16" : "h-18",
+          theme === 'dark' ? "text-white" : "text-gray-900"
         )}>
           {/* Logo */}
           <Link
@@ -97,7 +100,7 @@ export function Navigation() {
             )}>
               <BarChart3 className={cn(
                 "text-white group-hover:scale-110 transition-transform duration-300",
-                isMobile ? "h-5 w-5" : "h-6 w-6"
+                isMobile ? "h-5 w-5" : isTablet ? "h-5.5 w-5.5" : "h-6 w-6"
               )} />
             </div>
             <span className={cn(
@@ -110,8 +113,8 @@ export function Navigation() {
 
           {/* Desktop Navigation */}
           <div className={cn(
-            "items-center space-x-1",
-            isMobile ? "hidden" : isTablet ? "hidden md:flex md:space-x-4" : "hidden lg:flex lg:space-x-6"
+            "items-center",
+            isMobile ? "hidden" : isTablet ? "hidden md:flex md:space-x-2 md:gap-1 lg:gap-2" : "hidden lg:flex lg:space-x-4 lg:gap-2 xl:gap-3"
           )}>
             <Link
               href="/"
@@ -146,13 +149,14 @@ export function Navigation() {
           {/* Desktop Auth Buttons */}
           <div className={cn(
             "items-center",
-            isMobile ? "hidden" : isTablet ? "hidden md:flex md:space-x-2" : "hidden lg:flex lg:space-x-4"
+            isMobile ? "hidden" : isTablet ? "hidden md:flex md:space-x-2 md:gap-1" : "hidden lg:flex lg:space-x-3 lg:gap-2"
           )}>
             {isAuthenticated ? (
               <div className="flex items-center space-x-3">
                 <div className={cn(
                   "flex items-center space-x-2 px-3 py-2 text-sm premium-muted bg-muted/30 rounded-lg",
-                  isTablet && "hidden lg:flex"
+                  isTablet ? "hidden lg:flex" : isDesktop ? "flex" : "hidden",
+                  theme === 'dark' ? "bg-white/5" : "bg-black/5"
                 )}>
                   <User className="h-4 w-4" />
                   <span>Welcome back!</span>
@@ -174,6 +178,7 @@ export function Navigation() {
                     variant="ghost"
                     size={isTablet ? "sm" : "default"}
                     className="focus-enhanced"
+                    responsive
                   >
                     <span className={isTablet ? "hidden lg:inline" : ""}>Sign In</span>
                     <User className={cn("h-4 w-4", isTablet ? "lg:hidden" : "hidden")} />
@@ -184,6 +189,7 @@ export function Navigation() {
                     variant="gradient"
                     size={isTablet ? "sm" : "default"}
                     className="focus-enhanced"
+                    responsive
                   >
                     <span className={isTablet ? "hidden lg:inline" : ""}>Get Started</span>
                     <Plus className={cn("h-4 w-4", isTablet ? "lg:hidden" : "hidden")} />
@@ -201,9 +207,10 @@ export function Navigation() {
               variant="ghost"
               size="sm"
               onClick={toggleMenu}
-              className="p-2 focus-enhanced"
+              className={cn("p-2 focus-enhanced", theme === 'dark' ? "hover:bg-white/10" : "hover:bg-black/10")}
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMenuOpen}
+              responsive
             >
               <div className="relative w-6 h-6">
                 <Menu className={cn(
@@ -224,7 +231,8 @@ export function Navigation() {
       <div className={cn(
         "border-t border-border/50 bg-background/98 backdrop-blur-xl transition-all duration-300 ease-in-out overflow-hidden",
         isMobile ? "md:hidden" : isTablet ? "md:hidden" : "lg:hidden",
-        isMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+        isMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0",
+        theme === 'dark' ? "border-white/10" : "border-black/10"
       )}>
         <div className="px-4 py-4 space-y-2">
           {/* Navigation Links */}
@@ -263,7 +271,8 @@ export function Navigation() {
         </div>
 
         {/* Mobile Auth Section */}
-        <div className="px-4 pb-4 pt-2 border-t border-border/30 bg-muted/10">
+        <div className={cn("px-4 pb-4 pt-2 border-t bg-muted/10",
+        theme === 'dark' ? "border-white/10" : "border-black/10")}>
           {isAuthenticated ? (
             <div className="space-y-3">
               <div className="flex items-center gap-3 px-4 py-3 text-sm premium-muted bg-muted/40 rounded-xl">
@@ -278,6 +287,8 @@ export function Navigation() {
                   setIsMenuOpen(false)
                 }}
                 className="w-full flex items-center justify-center gap-2 focus-enhanced"
+                responsive
+                fullWidth
               >
                 <User className="h-4 w-4" />
                 Sign Out
@@ -286,7 +297,7 @@ export function Navigation() {
           ) : (
             <div className="space-y-3">
               <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="ghost" size="sm" className="w-full focus-enhanced">
+                <Button variant="ghost" size="sm" className="w-full focus-enhanced" responsive fullWidth>
                   <User className="h-4 w-4 mr-2" />
                   Sign In
                 </Button>
@@ -295,7 +306,7 @@ export function Navigation() {
                 href="/auth/register"
                 onClick={() => setIsMenuOpen(false)}
               >
-                <Button variant="gradient" size="sm" className="w-full focus-enhanced">
+                <Button variant="gradient" size="sm" className="w-full focus-enhanced" responsive fullWidth>
                   <Plus className="h-4 w-4 mr-2" />
                   Get Started
                 </Button>

@@ -4,12 +4,10 @@ import * as React from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Eye, EyeOff, UserPlus, Mail, Lock, User } from 'lucide-react'
+import { UserPlus } from 'lucide-react'
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
   Card,
   CardContent,
@@ -18,6 +16,16 @@ import {
   CardDescription,
 } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+import {
+  EmailField,
+  UsernameField,
+  PasswordField,
+  CheckboxField,
+  FormError,
+  FormFooter,
+  LinkText,
+  PasswordStrengthIndicator
+} from './form-components'
 
 const registerFormSchema = z
   .object({
@@ -123,37 +131,9 @@ export function RegisterForm({
     }
   }
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
-  }
+  // No longer need these toggle functions as they are handled by the components
 
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword)
-  }
-
-  const getPasswordStrength = (
-    password: string
-  ): { score: number; label: string; color: string } => {
-    if (!password) return { score: 0, label: '', color: '' }
-
-    let score = 0
-    const checks = [
-      password.length >= 8,
-      /[a-z]/.test(password),
-      /[A-Z]/.test(password),
-      /\d/.test(password),
-      /[^a-zA-Z\d]/.test(password),
-    ]
-
-    score = checks.filter(Boolean).length
-
-    if (score < 2) return { score, label: 'Weak', color: 'bg-red-500' }
-    if (score < 4) return { score, label: 'Fair', color: 'bg-yellow-500' }
-    if (score < 5) return { score, label: 'Good', color: 'bg-green-500' }
-    return { score, label: 'Strong', color: 'bg-green-600' }
-  }
-
-  const passwordStrength = getPasswordStrength(password)
+  // Password strength is now handled by the PasswordStrengthIndicator component
 
   return (
     <Card className={cn('w-full max-w-md mx-auto', className)}>
@@ -170,190 +150,56 @@ export function RegisterForm({
       <CardContent>
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
           {/* Username Field */}
-          <div className="space-y-2">
-            <Label htmlFor="username">
-              Username <span className="text-destructive">*</span>
-            </Label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="username"
-                type="text"
-                placeholder="Enter your username"
-                className={cn(
-                  'pl-10',
-                  errors.username &&
-                    'border-destructive focus-visible:ring-destructive'
-                )}
-                {...register('username')}
-                disabled={isLoading}
-                autoComplete="username"
-              />
-            </div>
-            {errors.username && (
-              <p className="text-sm text-destructive">
-                {errors.username.message}
-              </p>
-            )}
-          </div>
+          <UsernameField
+            label="Username"
+            placeholder="Enter your username"
+            error={errors.username?.message}
+            disabled={isLoading}
+            required
+            {...register('username')}
+          />
 
           {/* Email Field */}
-          <div className="space-y-2">
-            <Label htmlFor="email">
-              Email address <span className="text-destructive">*</span>
-            </Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                className={cn(
-                  'pl-10',
-                  errors.email &&
-                    'border-destructive focus-visible:ring-destructive'
-                )}
-                {...register('email')}
-                disabled={isLoading}
-                autoComplete="email"
-              />
-            </div>
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
-            )}
-          </div>
+          <EmailField
+            label="Email address"
+            placeholder="Enter your email"
+            error={errors.email?.message}
+            disabled={isLoading}
+            required
+            {...register('email')}
+          />
 
           {/* Password Field */}
-          <div className="space-y-2">
-            <Label htmlFor="password">
-              Password <span className="text-destructive">*</span>
-            </Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Create a password"
-                className={cn(
-                  'pl-10 pr-10',
-                  errors.password &&
-                    'border-destructive focus-visible:ring-destructive'
-                )}
-                {...register('password')}
-                disabled={isLoading}
-                autoComplete="new-password"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                onClick={togglePasswordVisibility}
-                disabled={isLoading}
-              >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" />
-                ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" />
-                )}
-              </Button>
-            </div>
+          <PasswordField
+            label="Password"
+            placeholder="Create a password"
+            error={errors.password?.message}
+            disabled={isLoading}
+            required
+            showPasswordState={[showPassword, setShowPassword]}
+            {...register('password')}
+          />
 
-            {/* Password Strength Indicator */}
-            {password && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground">
-                    Password strength:
-                  </span>
-                  <span
-                    className={cn(
-                      'text-xs font-medium',
-                      passwordStrength.score < 2
-                        ? 'text-red-600'
-                        : passwordStrength.score < 4
-                          ? 'text-yellow-600'
-                          : 'text-green-600'
-                    )}
-                  >
-                    {passwordStrength.label}
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className={cn(
-                      'h-2 rounded-full transition-all duration-300',
-                      passwordStrength.color
-                    )}
-                    style={{ width: `${(passwordStrength.score / 5) * 100}%` }}
-                  />
-                </div>
-              </div>
-            )}
-
-            {errors.password && (
-              <p className="text-sm text-destructive">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
+          {/* Password Strength Indicator */}
+          {password && (
+            <PasswordStrengthIndicator password={password} />
+          )}
 
           {/* Confirm Password Field */}
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">
-              Confirm Password <span className="text-destructive">*</span>
-            </Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="confirmPassword"
-                type={showConfirmPassword ? 'text' : 'password'}
-                placeholder="Confirm your password"
-                className={cn(
-                  'pl-10 pr-10',
-                  errors.confirmPassword &&
-                    'border-destructive focus-visible:ring-destructive'
-                )}
-                {...register('confirmPassword')}
-                disabled={isLoading}
-                autoComplete="new-password"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                onClick={toggleConfirmPasswordVisibility}
-                disabled={isLoading}
-              >
-                {showConfirmPassword ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" />
-                ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" />
-                )}
-              </Button>
-            </div>
-            {errors.confirmPassword && (
-              <p className="text-sm text-destructive">
-                {errors.confirmPassword.message}
-              </p>
-            )}
-          </div>
+          <PasswordField
+            label="Confirm Password"
+            placeholder="Confirm your password"
+            error={errors.confirmPassword?.message}
+            disabled={isLoading}
+            required
+            showPasswordState={[showConfirmPassword, setShowConfirmPassword]}
+            {...register('confirmPassword')}
+          />
 
           {/* Terms and Conditions */}
-          <div className="space-y-2">
-            <div className="flex items-start space-x-2">
-              <input
-                type="checkbox"
-                id="acceptTerms"
-                {...register('acceptTerms')}
-                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary mt-0.5"
-                disabled={isLoading}
-              />
-              <Label
-                htmlFor="acceptTerms"
-                className="text-sm font-normal leading-relaxed cursor-pointer"
-              >
+          <CheckboxField
+            label={
+              <>
                 I agree to the{' '}
                 <Link href="/terms" className="text-primary hover:underline">
                   Terms of Service
@@ -363,21 +209,15 @@ export function RegisterForm({
                   Privacy Policy
                 </Link>
                 <span className="text-destructive"> *</span>
-              </Label>
-            </div>
-            {errors.acceptTerms && (
-              <p className="text-sm text-destructive">
-                {errors.acceptTerms.message}
-              </p>
-            )}
-          </div>
+              </>
+            }
+            error={errors.acceptTerms?.message}
+            disabled={isLoading}
+            {...register('acceptTerms')}
+          />
 
           {/* Submit Error */}
-          {submitError && (
-            <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20">
-              <p className="text-sm text-destructive">{submitError}</p>
-            </div>
-          )}
+          <FormError error={submitError} />
 
           {/* Submit Button */}
           <Button
@@ -401,17 +241,12 @@ export function RegisterForm({
 
           {/* Login Link */}
           {showLoginLink && (
-            <div className="text-center pt-4 border-t">
+            <FormFooter>
               <p className="text-sm text-muted-foreground">
                 Already have an account?{' '}
-                <Link
-                  href="/auth/login"
-                  className="text-primary hover:underline font-medium"
-                >
-                  Sign in
-                </Link>
+                <LinkText href="/auth/login">Sign in</LinkText>
               </p>
-            </div>
+            </FormFooter>
           )}
 
           {/* Password Requirements */}

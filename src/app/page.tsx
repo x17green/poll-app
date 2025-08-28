@@ -170,7 +170,7 @@ export default function HomePage() {
           {/* Hero Badge */}
           <div className={cn(
             "inline-flex items-center gap-2 glass-card rounded-full font-medium mb-8 animate-fade-in hover:scale-105 transition-all duration-300",
-            isMobile ? "px-4 py-2 text-xs" : "px-6 py-3 text-sm"
+            isMobile ? "px-4 py-2 text-xs" : isTablet ? "px-5 py-2.5 text-xs" : "px-6 py-3 text-sm"
           )}>
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-glow-sm"></div>
             <span className="premium-muted">Join 50K+ users worldwide</span>

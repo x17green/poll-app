@@ -17,11 +17,11 @@ export function Footer() {
 
   if (!mounted) {
     return (
-      <footer className="bg-background/80 backdrop-blur-md border-t border-border">
-        <div className="container-responsive py-8">
+      <footer className="bg-background/80 backdrop-blur-md border-t border-border dark:border-white/10">
+        <div className="container-responsive py-6 sm:py-8">
           <div className="animate-pulse space-y-4">
             <div className="h-8 bg-muted/30 rounded w-32"></div>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {[...Array(4)].map((_, i) => (
                 <div key={i} className="space-y-2">
                   <div className="h-4 bg-muted/30 rounded w-20"></div>
@@ -37,16 +37,16 @@ export function Footer() {
   }
 
   return (
-    <footer className="bg-background/95 backdrop-blur-xl border-t border-border/50 relative">
+    <footer className="bg-background/95 backdrop-blur-xl border-t border-border/50 dark:border-white/10 relative">
       {/* Subtle background gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-muted/5 to-transparent pointer-events-none" />
 
       <div className={cn(
         "container-responsive relative",
-        isMobile ? "py-8" : isTablet ? "py-10" : "py-12"
+        isMobile ? "py-6 px-4" : isTablet ? "py-8 px-6" : "py-10 px-8"
       )}>
         <div className={cn(
-          "grid gap-8",
+          "grid gap-6 sm:gap-8 lg:gap-10",
           isMobile ? "grid-cols-1" : isTablet ? "grid-cols-2 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
         )}>
           {/* Brand */}
@@ -56,7 +56,7 @@ export function Footer() {
           )}>
             <Link
               href="/"
-              className="flex items-center gap-2 hover:opacity-80 transition-all duration-300 group focus-enhanced"
+              className="flex items-center gap-2 hover:opacity-90 transition-all duration-300 group focus-enhanced focus-visible:ring-2 focus-visible:ring-primary"
             >
               <div className={cn(
                 "bg-gradient-to-br from-primary via-brand-blue to-brand-accent rounded-lg shadow-glow-sm group-hover:shadow-glow transition-all duration-300",
@@ -76,7 +76,7 @@ export function Footer() {
             </Link>
             <p className={cn(
               "premium-muted leading-relaxed",
-              isMobile ? "text-sm max-w-full" : "premium-body-sm max-w-xs"
+              isMobile ? "text-sm max-w-full" : isTablet ? "text-sm max-w-xs" : "premium-body-sm max-w-sm"
             )}>
               Create engaging polls and gather insights from your audience with
               our modern, responsive polling platform.
@@ -85,14 +85,14 @@ export function Footer() {
             <div className="flex items-center gap-3 pt-2">
               <Link
                 href="#"
-                className="group p-2.5 rounded-xl bg-muted/30 hover:bg-muted/60 hover:scale-110 transition-all duration-300 focus-enhanced"
+                className="group p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-muted/30 hover:bg-muted/60 hover:scale-110 transition-all duration-300 focus-enhanced focus-visible:ring-2 focus-visible:ring-primary dark:focus-visible:ring-primary/70"
                 aria-label="Follow us on Twitter"
               >
                 <Twitter className="h-4 w-4 premium-muted group-hover:text-blue-400 transition-colors duration-300" />
               </Link>
               <Link
                 href="#"
-                className="group p-2.5 rounded-xl bg-muted/30 hover:bg-muted/60 hover:scale-110 transition-all duration-300 focus-enhanced"
+                className="group p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-muted/30 hover:bg-muted/60 hover:scale-110 transition-all duration-300 focus-enhanced focus-visible:ring-2 focus-visible:ring-primary dark:focus-visible:ring-primary/70"
                 aria-label="View our GitHub repository"
               >
                 <Github className="h-4 w-4 premium-muted group-hover:premium-text transition-colors duration-300" />

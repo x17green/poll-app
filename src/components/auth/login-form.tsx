@@ -4,12 +4,10 @@ import * as React from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Eye, EyeOff, LogIn, Mail, Lock } from '@/components/ui/icons'
+import { LogIn } from 'lucide-react'
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
   Card,
   CardContent,
@@ -18,6 +16,14 @@ import {
   CardDescription,
 } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+import {
+  EmailField,
+  PasswordField,
+  CheckboxField,
+  FormError,
+  FormFooter,
+  LinkText
+} from './form-components'
 
 const loginFormSchema = z.object({
   email: z
@@ -90,9 +96,7 @@ export function LoginForm({
     }
   }
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
-  }
+  // We don't need this function as it's handled by the PasswordField component
 
   return (
     <Card variant="glass" className={cn('w-full max-w-md mx-auto', className)}>
@@ -109,91 +113,34 @@ export function LoginForm({
       <CardContent>
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
           {/* Email Field */}
-          <div className="space-y-2">
-            <Label htmlFor="email">
-              Email address <span className="text-destructive">*</span>
-            </Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                className={cn(
-                  'pl-10',
-                  errors.email &&
-                    'border-destructive focus-visible:ring-destructive'
-                )}
-                {...register('email')}
-                disabled={isLoading}
-                autoComplete="email"
-              />
-            </div>
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
-            )}
-          </div>
+          <EmailField
+            label="Email address"
+            placeholder="Enter your email"
+            error={errors.email?.message}
+            disabled={isLoading}
+            required
+            {...register('email')}
+          />
 
           {/* Password Field */}
-          <div className="space-y-2">
-            <Label htmlFor="password">
-              Password <span className="text-destructive">*</span>
-            </Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Enter your password"
-                className={cn(
-                  'pl-10 pr-10',
-                  errors.password &&
-                    'border-destructive focus-visible:ring-destructive'
-                )}
-                {...register('password')}
-                disabled={isLoading}
-                autoComplete="current-password"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                onClick={togglePasswordVisibility}
-                disabled={isLoading}
-              >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" />
-                ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" />
-                )}
-              </Button>
-            </div>
-            {errors.password && (
-              <p className="text-sm text-destructive">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
+          <PasswordField
+            label="Password"
+            placeholder="Enter your password"
+            error={errors.password?.message}
+            disabled={isLoading}
+            required
+            showPasswordState={[showPassword, setShowPassword]}
+            {...register('password')}
+          />
 
           {/* Remember Me & Forgot Password */}
           <div className="flex items-center justify-between">
             {showRememberMe && (
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="rememberMe"
-                  {...register('rememberMe')}
-                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                  disabled={isLoading}
-                />
-                <Label
-                  htmlFor="rememberMe"
-                  className="text-sm font-normal cursor-pointer"
-                >
-                  Remember me
-                </Label>
-              </div>
+              <CheckboxField
+                label="Remember me"
+                disabled={isLoading}
+                {...register('rememberMe')}
+              />
             )}
             <Link
               href="/auth/forgot-password"
@@ -204,11 +151,7 @@ export function LoginForm({
           </div>
 
           {/* Submit Error */}
-          {submitError && (
-            <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20">
-              <p className="text-sm text-destructive">{submitError}</p>
-            </div>
-          )}
+          <FormError error={submitError} />
 
           {/* Submit Button */}
           <Button
@@ -232,17 +175,12 @@ export function LoginForm({
 
           {/* Register Link */}
           {showRegisterLink && (
-            <div className="text-center pt-4 border-t">
+            <FormFooter>
               <p className="text-sm text-muted-foreground">
                 Don&apos;t have an account?{' '}
-                <Link
-                  href="/auth/register"
-                  className="text-primary hover:underline font-medium"
-                >
-                  Create account
-                </Link>
+                <LinkText href="/auth/register">Create account</LinkText>
               </p>
-            </div>
+            </FormFooter>
           )}
 
           {/* Demo Account Info */}
