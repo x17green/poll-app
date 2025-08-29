@@ -1,7 +1,12 @@
 'use client'
 
-import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
+// Import theme system utilities and re-export them
+import * as ThemeSystem from './theme'
+import { ComponentSize, ComponentVariant } from './theme/types'
+import { ClassValue } from 'clsx'
+
+// Re-export theme system
+export * from './theme'
 
 /**************************************
  * GENERAL UTILITIES
@@ -9,9 +14,10 @@ import { twMerge } from 'tailwind-merge'
 
 /**
  * Combines and merges tailwind classes
+ * Re-exported from theme system for backward compatibility
  */
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return ThemeSystem.cn(...inputs)
 }
 
 /**
@@ -88,51 +94,13 @@ export function generateSlug(text: string): string {
  * THEME UTILITIES
  **************************************/
 
-export type ThemeMode = 'light' | 'dark' | 'system'
-export type ColorVariant = 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info'
-export type ComponentSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-export type ComponentVariant = 'default' | 'outline' | 'ghost' | 'glass' | 'gradient'
-
-// Color theme constants
-export const THEME_COLORS = {
-  light: {
-    primary: 'hsl(221.2 83.2% 53.3%)',
-    primaryForeground: 'hsl(210 40% 98%)',
-    secondary: 'hsl(210 40% 96%)',
-    secondaryForeground: 'hsl(222.2 84% 4.9%)',
-    background: 'hsl(0 0% 100%)',
-    foreground: 'hsl(222.2 84% 4.9%)',
-    muted: 'hsl(210 40% 96%)',
-    mutedForeground: 'hsl(215.4 16.3% 46.9%)',
-    accent: 'hsl(210 40% 96%)',
-    accentForeground: 'hsl(222.2 84% 4.9%)',
-    border: 'hsl(214.3 31.8% 91.4%)',
-    card: 'hsl(0 0% 100%)',
-    cardForeground: 'hsl(222.2 84% 4.9%)',
-    glass: 'rgba(255, 255, 255, 0.8)',
-    glassHover: 'rgba(255, 255, 255, 0.9)',
-  },
-  dark: {
-    primary: 'hsl(217.2 91.2% 59.8%)',
-    primaryForeground: 'hsl(222.2 84% 4.9%)',
-    secondary: 'hsl(217.2 32.6% 17.5%)',
-    secondaryForeground: 'hsl(210 40% 98%)',
-    background: 'hsl(222.2 84% 4.9%)',
-    foreground: 'hsl(210 40% 98%)',
-    muted: 'hsl(217.2 32.6% 17.5%)',
-    mutedForeground: 'hsl(215 20.2% 65.1%)',
-    accent: 'hsl(217.2 32.6% 17.5%)',
-    accentForeground: 'hsl(210 40% 98%)',
-    border: 'hsl(217.2 32.6% 17.5%)',
-    card: 'hsl(222.2 84% 4.9%)',
-    cardForeground: 'hsl(210 40% 98%)',
-    glass: 'rgba(255, 255, 255, 0.05)',
-    glassHover: 'rgba(255, 255, 255, 0.1)',
-  },
-}
+// These types and utilities are now imported from the theme system
+// They are kept here for backward compatibility
+// Use ThemeSystem imports directly for new code
 
 /**
  * Gets a brand color with optional opacity
+ * @deprecated Use ThemeSystem utilities instead
  */
 export const getBrandColor = (color: string, opacity?: number): string => {
   if (opacity !== undefined) {
@@ -143,22 +111,10 @@ export const getBrandColor = (color: string, opacity?: number): string => {
 
 /**
  * Gets a semantic color with optional opacity
+ * @deprecated Use ThemeSystem.getSemanticColor instead
  */
-export const getSemanticColor = (variant: ColorVariant, opacity?: number): string => {
-  const colorMap: Record<ColorVariant, string> = {
-    primary: 'var(--primary)',
-    secondary: 'var(--secondary)',
-    success: '#22c55e',
-    warning: '#f59e0b',
-    error: '#ef4444',
-    info: 'var(--brand-blue)',
-  }
-
-  const color = colorMap[variant]
-  if (opacity !== undefined) {
-    return `hsla(${color}, ${opacity})`
-  }
-  return `hsl(${color})`
+export const getSemanticColor = (variant: keyof typeof ThemeSystem.SEMANTIC_COLORS, opacity?: number): string => {
+  return ThemeSystem.getSemanticColor(variant, !!opacity)
 }
 
 /**************************************
@@ -167,69 +123,55 @@ export const getSemanticColor = (variant: ColorVariant, opacity?: number): strin
 
 /**
  * Generates button styles based on variant and size
+ * @deprecated Use buttonVariants from theme system instead
  */
 export const getButtonStyles = (
   variant: ComponentVariant = 'default',
   size: ComponentSize = 'md'
 ) => {
-  const baseStyles = 'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2'
+  // Create a mapped version of our inputs to match button variants
+  const variantMap: Record<ComponentVariant, string> = {
+    default: 'default',
+    destructive: 'destructive',
+    outline: 'outline',
+    secondary: 'secondary',
+    ghost: 'ghost',
+    link: 'link',
+    glass: 'glass',
+    gradient: 'gradient',
+    premium: 'premium',
+    minimal: 'ghost', // Map minimal to ghost
+  };
 
-  const sizeStyles = {
-    xs: 'h-7 px-2 text-xs',
-    sm: 'h-8 px-3 text-sm',
-    md: 'h-10 px-4 text-sm',
-    lg: 'h-11 px-6 text-base',
-    xl: 'h-12 px-8 text-lg',
-  }
+  const sizeMap: Record<ComponentSize, string> = {
+    default: 'default',
+    xs: 'xs',
+    sm: 'sm',
+    md: 'default', // Map md to default
+    lg: 'lg',
+    xl: 'xl',
+    icon: 'icon',
+    'icon-sm': 'icon-sm',
+    'icon-lg': 'icon-lg'
+  };
 
-  const variantStyles = {
-    default: cn(
-      'bg-primary text-primary-foreground shadow hover:bg-primary/90',
-      'focus:ring-primary/50'
-    ),
-    outline: cn(
-      'border border-border bg-transparent text-foreground hover:bg-muted hover:text-muted-foreground',
-      'focus:ring-border'
-    ),
-    ghost: cn(
-      'bg-transparent text-foreground hover:bg-muted hover:text-muted-foreground',
-      'focus:ring-muted'
-    ),
-    glass: cn(
-      'bg-white/10 dark:bg-white/5 backdrop-blur-lg border border-white/20 dark:border-white/10',
-      'text-foreground hover:bg-white/20 dark:hover:bg-white/10',
-      'focus:ring-primary/50'
-    ),
-    gradient: cn(
-      'bg-gradient-to-br from-brand-blue to-brand-indigo text-white',
-      'hover:from-brand-blue-light hover:to-brand-indigo shadow-glow',
-      'focus:ring-brand-blue/50'
-    ),
-  }
-
-  return cn(baseStyles, sizeStyles[size], variantStyles[variant])
+  return ThemeSystem.buttonVariants({
+    variant: variantMap[variant] as ThemeSystem.ButtonVariantProps['variant'],
+    size: sizeMap[size] as ThemeSystem.ButtonVariantProps['size']
+  });
 }
 
 /**
  * Generates card styles based on variant
+ * @deprecated Use cardVariants from theme system instead
  */
 export const getCardStyles = (variant: 'default' | 'glass' | 'elevated' = 'default') => {
-  const baseStyles = 'rounded-lg border transition-all duration-200'
-
-  const variantStyles = {
-    default: 'bg-card border-border shadow-sm',
-    glass: cn(
-      'bg-white/10 dark:bg-white/5 backdrop-blur-lg border-white/20 dark:border-white/10',
-      'shadow-glass hover:shadow-glass-hover'
-    ),
-    elevated: 'bg-card border-border shadow-lg hover:shadow-xl',
-  }
-
-  return cn(baseStyles, variantStyles[variant])
+  return ThemeSystem.cardVariants({ variant })
 }
 
 /**
  * Generates input styles based on variant
+ * @deprecated Use inputVariants from theme system instead
  */
 export const getInputStyles = (variant: 'default' | 'glass' = 'default') => {
   const baseStyles = cn(
@@ -240,18 +182,7 @@ export const getInputStyles = (variant: 'default' | 'glass' = 'default') => {
     'transition-all duration-200'
   )
 
-  const variantStyles = {
-    default: cn(
-      'bg-background border-border',
-      'focus:ring-primary/50 focus:border-primary'
-    ),
-    glass: cn(
-      'bg-white/10 dark:bg-white/5 backdrop-blur-lg border-white/20 dark:border-white/10',
-      'focus:ring-brand-blue/50 focus:border-brand-blue focus:bg-white/20 dark:focus:bg-white/10'
-    ),
-  }
-
-  return cn(baseStyles, variantStyles[variant])
+  return cn(baseStyles, ThemeSystem.inputVariants[variant])
 }
 
 /**************************************
@@ -363,27 +294,18 @@ export const getGridStyles = (cols?: { xs?: number; sm?: number; md?: number; lg
 
 /**
  * Gets the system theme preference
+ * @deprecated Use ThemeSystem.getSystemTheme instead
  */
 export const getSystemTheme = (): 'light' | 'dark' => {
-  if (typeof window === 'undefined') return 'dark'
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  return ThemeSystem.getSystemTheme()
 }
 
 /**
  * Applies a theme to the document
+ * @deprecated Use ThemeSystem.applyTheme instead
  */
-export const applyTheme = (theme: ThemeMode) => {
-  if (typeof document === 'undefined') return
-
-  const root = document.documentElement
-  root.classList.remove('light', 'dark')
-
-  if (theme === 'system') {
-    const systemTheme = getSystemTheme()
-    root.classList.add(systemTheme)
-  } else {
-    root.classList.add(theme)
-  }
+export const applyTheme = (theme: ThemeSystem.ThemeMode) => {
+  ThemeSystem.applyTheme(theme)
 }
 
 /**************************************
@@ -435,11 +357,10 @@ export const adjustOpacity = (color: string, opacity: number): string => {
 
 /**
  * Gets a contrasting text color for a background
+ * @deprecated Use ThemeSystem.getContrastColor instead
  */
 export const getContrastColor = (backgroundColor: string): string => {
-  // Simple contrast calculation - in a real app you might want a more sophisticated approach
-  const isDark = backgroundColor.includes('dark') || backgroundColor.includes('222.2')
-  return isDark ? 'hsl(210 40% 98%)' : 'hsl(222.2 84% 4.9%)'
+  return ThemeSystem.getContrastColor(backgroundColor)
 }
 
 /**
@@ -455,18 +376,18 @@ export const getFocusStyles = (color: string = 'primary') => {
 
 /**
  * Sets a CSS variable
+ * @deprecated Use ThemeSystem.setCSSVariable instead
  */
 export const setCSSVariable = (name: string, value: string) => {
-  if (typeof document === 'undefined') return
-  document.documentElement.style.setProperty(`--${name}`, value)
+  ThemeSystem.setCSSVariable(name, value)
 }
 
 /**
  * Gets a CSS variable value
+ * @deprecated Use ThemeSystem.getCSSVariable instead
  */
 export const getCSSVariable = (name: string): string => {
-  if (typeof document === 'undefined') return ''
-  return getComputedStyle(document.documentElement).getPropertyValue(`--${name}`)
+  return ThemeSystem.getCSSVariable(name)
 }
 
 /**************************************

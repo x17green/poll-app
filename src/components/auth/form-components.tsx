@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { cn } from '@/lib/utils'
+import { cn, premiumTextStyles } from '@/lib/theme'
 
 /**
  * FormField Component
@@ -111,9 +111,9 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
     },
     ref
   ) => {
-    // Extract useState to avoid conditional hook call
-    const defaultState = React.useState(false)
-    const [showPassword, setShowPassword] = showPasswordState || defaultState
+    // Extract useState to avoid conditional hook call - properly handle conditional hook
+    const [internalShowPassword, setInternalShowPassword] = React.useState(false)
+    const [showPassword, setShowPassword] = showPasswordState || [internalShowPassword, setInternalShowPassword]
 
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword)
@@ -258,7 +258,7 @@ export const FormError: React.FC<FormErrorProps> = ({ error, className }) => {
 
   return (
     <div className={cn('p-3 rounded-md bg-destructive/10 border border-destructive/20', className)}>
-      <p className="text-sm text-destructive">{error}</p>
+      <p className={cn("text-sm", premiumTextStyles.error)}>{error}</p>
     </div>
   )
 }
@@ -331,7 +331,7 @@ interface LinkTextProps {
 export const LinkText: React.FC<LinkTextProps> = ({ href, children, className }) => (
   <Link
     href={href}
-    className={cn('text-primary hover:underline font-medium', className)}
+    className={cn(premiumTextStyles.accent, 'hover:underline', className)}
   >
     {children}
   </Link>
@@ -358,17 +358,17 @@ export const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps>
   return (
     <div className={cn('space-y-2', className)}>
       <div className="flex items-center justify-between">
-        <span className="text-xs text-muted-foreground">
+        <span className={cn("text-xs", premiumTextStyles.muted)}>
           Password strength:
         </span>
         <span
           className={cn(
             'text-xs font-medium',
             strength.score < 2
-              ? 'text-red-600'
+              ? premiumTextStyles.error
               : strength.score < 4
-                ? 'text-yellow-600'
-                : 'text-green-600'
+                ? premiumTextStyles.warning
+                : premiumTextStyles.success
           )}
         >
           {strength.label}
@@ -404,8 +404,8 @@ const getPasswordStrength = (
 
   score = checks.filter(Boolean).length
 
-  if (score < 2) return { score, label: 'Weak', color: 'bg-red-500' }
-  if (score < 4) return { score, label: 'Fair', color: 'bg-yellow-500' }
-  if (score < 5) return { score, label: 'Good', color: 'bg-green-500' }
-  return { score, label: 'Strong', color: 'bg-green-600' }
+  if (score < 2) return { score, label: 'Weak', color: 'bg-error-500 dark:bg-error-400' }
+  if (score < 4) return { score, label: 'Fair', color: 'bg-warning-500 dark:bg-warning-400' }
+  if (score < 5) return { score, label: 'Good', color: 'bg-success-500 dark:bg-success-400' }
+  return { score, label: 'Strong', color: 'bg-success-600 dark:bg-success-500' }
 }

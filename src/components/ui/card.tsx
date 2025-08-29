@@ -1,33 +1,9 @@
 'use client'
 
 import * as React from 'react'
-import { cva, type VariantProps } from 'class-variance-authority'
+import { type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
-
-const cardVariants = cva(
-  'rounded-lg border transition-all duration-200',
-  {
-    variants: {
-      variant: {
-        default: 'bg-card text-card-foreground shadow-sm border-border',
-        glass: 'bg-white/10 dark:bg-white/5 backdrop-blur-lg border-white/20 dark:border-white/10 shadow-glass',
-        elevated: 'bg-card text-card-foreground shadow-lg border-border hover:shadow-xl',
-        gradient: 'bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20 shadow-sm',
-        outline: 'border-2 border-dashed border-border bg-transparent hover:bg-muted/50',
-      },
-      size: {
-        sm: 'p-3',
-        md: 'p-4',
-        lg: 'p-6',
-        xl: 'p-8',
-      } as const,
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'md',
-    },
-  }
-)
+import { cardVariants } from '@/lib/theme'
 
 export interface CardProps
   extends React.HTMLAttributes<HTMLDivElement>,

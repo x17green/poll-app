@@ -1,33 +1,9 @@
 'use client'
 
 import * as React from 'react'
-import { cva, type VariantProps } from 'class-variance-authority'
+import { type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
-
-const labelVariants = cva(
-  'font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 transition-colors duration-200',
-  {
-    variants: {
-      variant: {
-        default: 'text-foreground',
-        muted: 'text-muted-foreground',
-        accent: 'text-primary',
-        success: 'text-green-600 dark:text-green-400',
-        warning: 'text-yellow-600 dark:text-yellow-400',
-        error: 'text-destructive',
-      },
-      size: {
-        sm: 'text-xs',
-        md: 'text-sm',
-        lg: 'text-base',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'md',
-    },
-  }
-)
+import { labelVariants } from '@/lib/theme'
 
 export interface LabelProps
   extends React.LabelHTMLAttributes<HTMLLabelElement>,

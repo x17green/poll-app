@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { RegisterForm } from '@/components/auth/register-form'
 import { ArrowLeft } from '@/components/ui/icons'
+import { cn, glassStyles } from '@/lib/theme'
 
 interface RegisterData {
   username: string
@@ -78,7 +79,7 @@ export default function RegisterPage() {
           <div className="mb-6">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-sm premium-muted hover:text-foreground transition-colors duration-200"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to home
@@ -90,8 +91,8 @@ export default function RegisterPage() {
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-600 shadow-lg mb-4">
               <div className="text-white font-bold text-xl">P</div>
             </div>
-            <h1 className="premium-heading-lg">Create your account</h1>
-            <p className="mt-2 premium-body text-center">
+            <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-foreground">Create your account</h1>
+            <p className="mt-2 text-base text-muted-foreground leading-relaxed text-center">
               Join thousands of users creating engaging polls and surveys
             </p>
           </div>
@@ -99,7 +100,7 @@ export default function RegisterPage() {
 
         {/* Register Form Container */}
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="glass-card p-6 sm:p-8">
+          <div className={cn("rounded-lg border p-6 sm:p-8 transition-all duration-200", glassStyles.all)}>
             <RegisterForm
               onSubmit={handleRegister}
               isLoading={isLoading}
@@ -109,10 +110,10 @@ export default function RegisterPage() {
 
             {/* Sign In Link */}
             <div className="mt-6 text-center">
-              <span className="premium-body-sm">Already have an account? </span>
+              <span className="text-sm text-muted-foreground/80 leading-relaxed">Already have an account? </span>
               <Link
                 href="/auth/login"
-                className="font-medium premium-accent-text hover:underline transition-colors duration-200"
+                className="font-medium text-primary hover:underline transition-colors duration-200"
               >
                 Sign in here
               </Link>
@@ -123,7 +124,7 @@ export default function RegisterPage() {
         {/* Additional Info */}
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="text-center space-y-4">
-            <div className="flex items-center justify-center space-x-4 text-sm premium-subtle">
+            <div className="flex items-center justify-center space-x-4 text-sm text-muted-foreground/50">
               <Link href="/privacy" className="hover:text-foreground transition-colors">
                 Privacy
               </Link>

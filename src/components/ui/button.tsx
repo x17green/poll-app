@@ -5,27 +5,24 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 import { useResponsive } from '@/hooks/use-responsive'
 
+// Define button variants locally to avoid type conflicts
+// We don't import from theme system because we need to add the 'rounded' variant
+
+// Define local button variants with rounded variant
 const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 relative overflow-hidden group',
+  'inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 relative overflow-hidden group',
   {
     variants: {
       variant: {
-        default:
-          'bg-primary text-primary-foreground shadow hover:bg-primary/90 hover:shadow-lg active:scale-95',
-        destructive:
-          'bg-destructive text-destructive-foreground shadow hover:bg-destructive/90 hover:shadow-lg active:scale-95',
-        outline:
-          'border border-input bg-background hover:bg-accent hover:text-accent-foreground shadow-sm hover:shadow-md active:scale-95',
-        secondary:
-          'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 hover:shadow-md active:scale-95',
+        default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90 hover:shadow-lg active:scale-95',
+        destructive: 'bg-destructive text-destructive-foreground shadow hover:bg-destructive/90 hover:shadow-lg active:scale-95',
+        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground shadow-sm hover:shadow-md active:scale-95',
+        secondary: 'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 hover:shadow-md active:scale-95',
         ghost: 'hover:bg-accent hover:text-accent-foreground active:scale-95',
         link: 'text-primary underline-offset-4 hover:underline',
-        glass:
-          'bg-white/10 dark:bg-white/5 backdrop-blur-lg border border-white/20 dark:border-white/10 text-foreground hover:bg-white/20 dark:hover:bg-white/10 shadow-glass hover:shadow-glass-hover active:scale-95',
-        gradient:
-          'bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 dark:from-blue-600 dark:via-blue-700 dark:to-indigo-700 text-white shadow-glow hover:shadow-glow-lg hover:from-blue-400 hover:via-blue-500 hover:to-indigo-500 dark:hover:from-blue-500 dark:hover:via-blue-600 dark:hover:to-indigo-600 active:scale-95',
-        premium:
-          'bg-gradient-to-br from-brand-blue to-brand-indigo text-white shadow-lg hover:shadow-xl hover:shadow-brand-blue/25 active:scale-95 before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:via-transparent before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300',
+        glass: 'bg-white/10 dark:bg-white/5 backdrop-blur-lg border border-white/20 dark:border-white/10 text-foreground hover:bg-white/20 dark:hover:bg-white/10 shadow-glass hover:shadow-glass-hover active:scale-95',
+        gradient: 'bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 dark:from-blue-600 dark:via-blue-700 dark:to-indigo-700 text-white shadow-glow hover:shadow-glow-lg hover:from-blue-400 hover:via-blue-500 hover:to-indigo-500 dark:hover:from-blue-500 dark:hover:via-blue-600 dark:hover:to-indigo-600 active:scale-95',
+        premium: 'bg-gradient-to-br from-brand-blue to-brand-indigo text-white shadow-lg hover:shadow-xl hover:shadow-brand-blue/25 active:scale-95 before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:via-transparent before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300',
       },
       size: {
         default: 'h-10 px-4 py-2 text-sm',
@@ -130,18 +127,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {/* Button content */}
         <div
           className={cn(
-            'flex items-center gap-2 relative z-10',
+            'flex items-center justify-center gap-2 relative z-10',
+            'h-full',
             loading && 'opacity-0'
           )}
         >
           {leftIcon && (
-            <span className="flex-shrink-0 transition-transform duration-200 group-hover:scale-110">
+            <span className="flex-shrink-0 transition-transform duration-200 group-hover:scale-110 flex items-center">
               {leftIcon}
             </span>
           )}
-          {children && <span className="flex-1">{children}</span>}
+          {children && <span className="flex-1 flex items-center justify-center">{children}</span>}
           {rightIcon && (
-            <span className="flex-shrink-0 transition-transform duration-200 group-hover:scale-110">
+            <span className="flex-shrink-0 transition-transform duration-200 group-hover:scale-110 flex items-center">
               {rightIcon}
             </span>
           )}

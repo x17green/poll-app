@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { LoginForm } from '@/components/auth/login-form'
 import { ArrowLeft } from '@/components/ui/icons'
+import { cn, glassStyles } from '@/lib/theme'
 
 interface LoginData {
   email: string
@@ -68,7 +69,7 @@ export default function LoginPage() {
           <div className="mb-6">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-sm premium-muted hover:text-foreground transition-colors duration-200"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to home
@@ -80,8 +81,8 @@ export default function LoginPage() {
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg mb-4">
               <div className="text-white font-bold text-xl">P</div>
             </div>
-            <h1 className="premium-heading-lg">Welcome back</h1>
-            <p className="mt-2 premium-body text-center">
+            <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-foreground">Welcome back</h1>
+            <p className="mt-2 text-base text-muted-foreground leading-relaxed text-center">
               Sign in to your account to access your polls and create new ones
             </p>
           </div>
@@ -89,7 +90,7 @@ export default function LoginPage() {
 
         {/* Login Form Container */}
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="glass-card p-6 sm:p-8">
+          <div className={cn("rounded-lg border p-6 sm:p-8 transition-all duration-200", glassStyles.all)}>
             <LoginForm
               onSubmit={handleLogin}
               isLoading={isLoading}
@@ -110,10 +111,10 @@ export default function LoginPage() {
 
             {/* Sign Up Link */}
             <div className="mt-6 text-center">
-              <span className="premium-body-sm">Don&apos;t have an account? </span>
+              <span className="text-sm text-muted-foreground/80 leading-relaxed">Don&apos;t have an account? </span>
               <Link
                 href="/auth/register"
-                className="font-medium premium-accent-text hover:underline transition-colors duration-200"
+                className="font-medium text-primary hover:underline transition-colors duration-200"
               >
                 Sign up here
               </Link>
@@ -124,7 +125,7 @@ export default function LoginPage() {
         {/* Additional Info */}
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="text-center space-y-4">
-            <div className="flex items-center justify-center space-x-4 text-sm premium-subtle">
+            <div className="flex items-center justify-center space-x-4 text-sm text-muted-foreground/50">
               <Link href="/privacy" className="hover:text-foreground transition-colors">
                 Privacy
               </Link>

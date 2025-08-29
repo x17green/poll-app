@@ -4,7 +4,7 @@ import * as React from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { useResponsive } from '@/hooks/use-responsive'
-import { cn } from '@/lib/utils'
+import { cn, glassStyles } from '@/lib/theme'
 
 import {
   BarChart3,
@@ -141,7 +141,7 @@ export default function HomePage() {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-4">
           <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary/20 border-t-primary mx-auto"></div>
-          <p className="premium-body-sm premium-muted">Loading amazing polls...</p>
+          <p className="text-sm text-muted-foreground/80 leading-relaxed">Loading amazing polls...</p>
         </div>
       </div>
     )
@@ -169,7 +169,8 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto">
           {/* Hero Badge */}
           <div className={cn(
-            "inline-flex items-center gap-2 glass-card rounded-full font-medium mb-8 animate-fade-in hover:scale-105 transition-all duration-300",
+            "inline-flex items-center gap-2 rounded-full font-medium mb-8 animate-fade-in hover:scale-105 transition-all duration-300",
+            glassStyles.all,
             isMobile ? "px-4 py-2 text-xs" : isTablet ? "px-5 py-2.5 text-xs" : "px-6 py-3 text-sm"
           )}>
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-glow-sm"></div>
@@ -259,7 +260,8 @@ export default function HomePage() {
               <div
                 key={stat.label}
                 className={cn(
-                  "glass-card text-center group hover:scale-105 transition-all duration-300 card-responsive animate-fade-in hover:shadow-glow-sm",
+                  "text-center group hover:scale-105 transition-all duration-300 card-responsive animate-fade-in hover:shadow-glow-sm",
+                  glassStyles.all,
                 )}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -310,14 +312,15 @@ export default function HomePage() {
 
           {/* Features Grid */}
           <div className={cn(
-            "grid gap-6",
+            "grid gap-6 justify-center",
             isMobile ? "grid-cols-1" : isTablet ? "grid-cols-2" : "grid-cols-3"
           )}>
             {features.map((feature) => (
               <div
                 key={feature.title}
                 className={cn(
-                  "glass-card group hover:scale-105 hover:shadow-glow transition-all duration-500 animate-fade-in card-responsive",
+                  "group hover:scale-105 hover:shadow-glow transition-all duration-500 animate-fade-in card-responsive",
+                  glassStyles.all,
                   isMobile ? "p-6" : ""
                 )}
                 style={{ animationDelay: `${feature.delay}ms` }}
