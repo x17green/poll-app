@@ -1,6 +1,7 @@
 'use client'
 
-import * as React from 'react'
+import React from 'react'
+// import { createClient } from '@/lib/supabase/client'
 import { useForm, useFieldArray } from 'react-hook-form'
 // import { zodResolver } from '@hookform/resolvers/zod' // Removed until package is available
 // import { z } from 'zod' // TODO: Re-enable when zod validation is needed
@@ -142,44 +143,48 @@ export function PollForm({
   }
 
   return (
-    <div className={cn(
-      'w-full mx-auto container-responsive',
-      isMobile ? 'max-w-full' : isTablet ? 'max-w-3xl' : 'max-w-4xl',
-      className
-    )}>
-      <form onSubmit={handleSubmit(handleFormSubmit)} className={cn(
-        'space-y-6',
-        isMobile ? 'space-y-4' : ''
-      )}>
+    <div
+      className={cn(
+        'w-full mx-auto container-responsive',
+        isMobile ? 'max-w-full' : isTablet ? 'max-w-3xl' : 'max-w-4xl',
+        className
+      )}
+    >
+      <form
+        onSubmit={handleSubmit(handleFormSubmit)}
+        className={cn('space-y-6', isMobile ? 'space-y-4' : '')}
+      >
         {/* Basic Information */}
         <Card className="glass-card border-border/50 hover:shadow-glow-sm transition-all duration-300">
-          <CardHeader className={cn(
-            "border-b border-border/30 bg-muted/5",
-            isMobile ? "p-4" : "p-6"
-          )}>
-            <CardTitle className={cn(
-              "flex items-center gap-2 premium-text",
-              isMobile ? "text-lg" : "text-xl"
-            )}>
+          <CardHeader
+            className={cn(
+              'border-b border-border/30 bg-muted/5',
+              isMobile ? 'p-4' : 'p-6'
+            )}
+          >
+            <CardTitle
+              className={cn(
+                'flex items-center gap-2 premium-text',
+                isMobile ? 'text-lg' : 'text-xl'
+              )}
+            >
               <div className="p-2 bg-gradient-to-br from-primary to-brand-accent rounded-lg shadow-glow-sm">
-                <Settings className={cn(
-                  "text-white",
-                  isMobile ? "h-4 w-4" : "h-5 w-5"
-                )} />
+                <Settings
+                  className={cn('text-white', isMobile ? 'h-4 w-4' : 'h-5 w-5')}
+                />
               </div>
               Poll Details
             </CardTitle>
           </CardHeader>
-          <CardContent className={cn(
-            "space-y-4",
-            isMobile ? "p-4 space-y-3" : "p-6"
-          )}>
+          <CardContent
+            className={cn('space-y-4', isMobile ? 'p-4 space-y-3' : 'p-6')}
+          >
             <div className="space-y-2">
               <Label
                 htmlFor="title"
                 className={cn(
-                  "premium-text font-semibold flex items-center gap-2",
-                  isMobile ? "text-sm" : ""
+                  'premium-text font-semibold flex items-center gap-2',
+                  isMobile ? 'text-sm' : ''
                 )}
               >
                 Poll Title <span className="text-destructive">*</span>
@@ -207,8 +212,8 @@ export function PollForm({
               <Label
                 htmlFor="description"
                 className={cn(
-                  "premium-muted font-medium",
-                  isMobile ? "text-sm" : ""
+                  'premium-muted font-medium',
+                  isMobile ? 'text-sm' : ''
                 )}
               >
                 Description (Optional)
@@ -218,7 +223,8 @@ export function PollForm({
                 placeholder="Provide additional context or instructions for your poll..."
                 className={cn(
                   'glass-input focus-enhanced transition-all duration-200 resize-none',
-                  errors.description && 'border-destructive ring-destructive/20',
+                  errors.description &&
+                    'border-destructive ring-destructive/20',
                   isMobile ? 'min-h-[60px] text-sm' : 'min-h-[80px]'
                 )}
                 {...register('description')}
@@ -235,44 +241,53 @@ export function PollForm({
 
         {/* Poll Options */}
         <Card className="glass-card border-border/50 hover:shadow-glow-sm transition-all duration-300">
-          <CardHeader className={cn(
-            "border-b border-border/30 bg-muted/5",
-            isMobile ? "p-4" : "p-6"
-          )}>
-            <CardTitle className={cn(
-              "flex items-center gap-2 premium-text",
-              isMobile ? "text-lg" : "text-xl"
-            )}>
+          <CardHeader
+            className={cn(
+              'border-b border-border/30 bg-muted/5',
+              isMobile ? 'p-4' : 'p-6'
+            )}
+          >
+            <CardTitle
+              className={cn(
+                'flex items-center gap-2 premium-text',
+                isMobile ? 'text-lg' : 'text-xl'
+              )}
+            >
               <div className="p-2 bg-gradient-to-br from-brand-accent to-brand-blue rounded-lg shadow-glow-sm">
-                <Users className={cn(
-                  "text-white",
-                  isMobile ? "h-4 w-4" : "h-5 w-5"
-                )} />
+                <Users
+                  className={cn('text-white', isMobile ? 'h-4 w-4' : 'h-5 w-5')}
+                />
               </div>
               Poll Options
-              <span className={cn(
-                "premium-muted font-normal",
-                isMobile ? "text-xs" : "text-sm"
-              )}>
+              <span
+                className={cn(
+                  'premium-muted font-normal',
+                  isMobile ? 'text-xs' : 'text-sm'
+                )}
+              >
                 ({fields.length}/10)
               </span>
             </CardTitle>
           </CardHeader>
-          <CardContent className={cn(
-            "space-y-4",
-            isMobile ? "p-4 space-y-3" : "p-6"
-          )}>
+          <CardContent
+            className={cn('space-y-4', isMobile ? 'p-4 space-y-3' : 'p-6')}
+          >
             {fields.map((field, index) => (
-              <div key={field.id} className={cn(
-                "glass-card border border-border/30 transition-all duration-200 hover:border-border/60",
-                isMobile ? "p-3" : "p-4"
-              )}>
+              <div
+                key={field.id}
+                className={cn(
+                  'glass-card border border-border/30 transition-all duration-200 hover:border-border/60',
+                  isMobile ? 'p-3' : 'p-4'
+                )}
+              >
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 mt-1">
-                    <div className={cn(
-                      "w-8 h-8 rounded-full bg-gradient-to-br from-primary to-brand-accent flex items-center justify-center text-white font-semibold shadow-glow-sm",
-                      isMobile ? "w-6 h-6 text-xs" : "text-sm"
-                    )}>
+                    <div
+                      className={cn(
+                        'w-8 h-8 rounded-full bg-gradient-to-br from-primary to-brand-accent flex items-center justify-center text-white font-semibold shadow-glow-sm',
+                        isMobile ? 'w-6 h-6 text-xs' : 'text-sm'
+                      )}
+                    >
                       {index + 1}
                     </div>
                   </div>
@@ -280,8 +295,8 @@ export function PollForm({
                     <Label
                       htmlFor={`option-${index}`}
                       className={cn(
-                        "premium-text font-medium flex items-center gap-2",
-                        isMobile ? "text-sm" : ""
+                        'premium-text font-medium flex items-center gap-2',
+                        isMobile ? 'text-sm' : ''
                       )}
                     >
                       Option {index + 1}
@@ -298,7 +313,8 @@ export function PollForm({
                       {...register(`options.${index}.text`)}
                       className={cn(
                         'glass-input focus-enhanced transition-all duration-200',
-                        errors.options?.[index]?.text && 'border-destructive ring-destructive/20',
+                        errors.options?.[index]?.text &&
+                          'border-destructive ring-destructive/20',
                         isMobile ? 'text-sm' : ''
                       )}
                     />
@@ -312,12 +328,12 @@ export function PollForm({
                   <Button
                     type="button"
                     variant="ghost"
-                    size={isMobile ? "sm" : "icon"}
+                    size={isMobile ? 'sm' : 'icon'}
                     onClick={() => removeOption(index)}
                     disabled={fields.length <= 2}
                     className={cn(
-                      "flex-shrink-0 hover:bg-destructive/10 hover:text-destructive transition-all duration-200",
-                      fields.length <= 2 && "opacity-50 cursor-not-allowed"
+                      'flex-shrink-0 hover:bg-destructive/10 hover:text-destructive transition-all duration-200',
+                      fields.length <= 2 && 'opacity-50 cursor-not-allowed'
                     )}
                   >
                     <X className="h-4 w-4" />
@@ -340,46 +356,50 @@ export function PollForm({
               onClick={addOption}
               disabled={fields.length >= 10}
               className={cn(
-                "w-full group hover:scale-105 transition-all duration-300",
-                fields.length >= 10 ? "opacity-50 cursor-not-allowed" : ""
+                'w-full group hover:scale-105 transition-all duration-300',
+                fields.length >= 10 ? 'opacity-50 cursor-not-allowed' : ''
               )}
             >
               <Plus className="h-4 w-4 mr-2 group-hover:rotate-90 transition-transform duration-300" />
               Add Option{' '}
-              {fields.length < 10 ? `(${fields.length}/10)` : '(Maximum reached)'}
+              {fields.length < 10
+                ? `(${fields.length}/10)`
+                : '(Maximum reached)'}
             </Button>
           </CardContent>
         </Card>
 
         {/* Poll Settings */}
         <Card className="glass-card border-border/50 hover:shadow-glow-sm transition-all duration-300">
-          <CardHeader className={cn(
-            "border-b border-border/30 bg-muted/5",
-            isMobile ? "p-4" : "p-6"
-          )}>
-            <CardTitle className={cn(
-              "flex items-center gap-2 premium-text",
-              isMobile ? "text-lg" : "text-xl"
-            )}>
+          <CardHeader
+            className={cn(
+              'border-b border-border/30 bg-muted/5',
+              isMobile ? 'p-4' : 'p-6'
+            )}
+          >
+            <CardTitle
+              className={cn(
+                'flex items-center gap-2 premium-text',
+                isMobile ? 'text-lg' : 'text-xl'
+              )}
+            >
               <div className="p-2 bg-gradient-to-br from-brand-blue to-primary rounded-lg shadow-glow-sm">
-                <Settings className={cn(
-                  "text-white",
-                  isMobile ? "h-4 w-4" : "h-5 w-5"
-                )} />
+                <Settings
+                  className={cn('text-white', isMobile ? 'h-4 w-4' : 'h-5 w-5')}
+                />
               </div>
               Poll Settings
             </CardTitle>
           </CardHeader>
-          <CardContent className={cn(
-            "space-y-4",
-            isMobile ? "p-4 space-y-3" : "p-6"
-          )}>
+          <CardContent
+            className={cn('space-y-4', isMobile ? 'p-4 space-y-3' : 'p-6')}
+          >
             <div className="space-y-2">
               <Label
                 htmlFor="expiresAt"
                 className={cn(
-                  "premium-text font-medium flex items-center gap-2",
-                  isMobile ? "text-sm" : ""
+                  'premium-text font-medium flex items-center gap-2',
+                  isMobile ? 'text-sm' : ''
                 )}
               >
                 <Calendar className="h-4 w-4" />
@@ -395,16 +415,18 @@ export function PollForm({
                   isMobile ? 'text-sm' : ''
                 )}
               />
-              <p className={cn(
-                "premium-muted flex items-center gap-2",
-                isMobile ? "text-xs" : "text-sm"
-              )}>
+              <p
+                className={cn(
+                  'premium-muted flex items-center gap-2',
+                  isMobile ? 'text-xs' : 'text-sm'
+                )}
+              >
                 <Info className="h-3 w-3" />
                 Leave empty for polls that never expire
               </p>
             </div>
 
-            <div className={cn("space-y-4", isMobile ? "space-y-3" : "")}>
+            <div className={cn('space-y-4', isMobile ? 'space-y-3' : '')}>
               <div className="glass-card border border-border/30 p-4 hover:border-border/60 transition-all duration-200">
                 <div className="flex items-start space-x-3">
                   <input
@@ -417,16 +439,18 @@ export function PollForm({
                     <Label
                       htmlFor="allowMultipleVotes"
                       className={cn(
-                        "premium-text font-medium cursor-pointer",
-                        isMobile ? "text-sm" : ""
+                        'premium-text font-medium cursor-pointer',
+                        isMobile ? 'text-sm' : ''
                       )}
                     >
                       Multiple Choice Selection
                     </Label>
-                    <p className={cn(
-                      "premium-muted mt-1",
-                      isMobile ? "text-xs" : "text-sm"
-                    )}>
+                    <p
+                      className={cn(
+                        'premium-muted mt-1',
+                        isMobile ? 'text-xs' : 'text-sm'
+                      )}
+                    >
                       Allow voters to select multiple options in this poll
                     </p>
                   </div>
@@ -446,16 +470,18 @@ export function PollForm({
                     <Label
                       htmlFor="requireAuth"
                       className={cn(
-                        "premium-text font-medium cursor-pointer",
-                        isMobile ? "text-sm" : ""
+                        'premium-text font-medium cursor-pointer',
+                        isMobile ? 'text-sm' : ''
                       )}
                     >
                       Authentication Required
                     </Label>
-                    <p className={cn(
-                      "premium-muted mt-1",
-                      isMobile ? "text-xs" : "text-sm"
-                    )}>
+                    <p
+                      className={cn(
+                        'premium-muted mt-1',
+                        isMobile ? 'text-xs' : 'text-sm'
+                      )}
+                    >
                       Require users to sign in before voting
                     </p>
                   </div>
@@ -466,20 +492,25 @@ export function PollForm({
 
             {/* Settings Summary */}
             <div className="glass-card border border-primary/20 bg-primary/5 p-4">
-              <p className={cn(
-                "font-semibold mb-3 premium-text flex items-center gap-2",
-                isMobile ? "text-sm" : ""
-              )}>
+              <p
+                className={cn(
+                  'font-semibold mb-3 premium-text flex items-center gap-2',
+                  isMobile ? 'text-sm' : ''
+                )}
+              >
                 <Settings className="h-4 w-4 text-primary" />
                 Poll Configuration Summary:
               </p>
-              <ul className={cn(
-                "space-y-2 premium-muted",
-                isMobile ? "text-xs space-y-1" : "text-sm"
-              )}>
+              <ul
+                className={cn(
+                  'space-y-2 premium-muted',
+                  isMobile ? 'text-xs space-y-1' : 'text-sm'
+                )}
+              >
                 <li className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  {watchedOptions?.length || 0} option{(watchedOptions?.length || 0) !== 1 ? 's' : ''}
+                  {watchedOptions?.length || 0} option
+                  {(watchedOptions?.length || 0) !== 1 ? 's' : ''}
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-brand-accent rounded-full"></div>
@@ -501,10 +532,10 @@ export function PollForm({
           <Button
             type="submit"
             variant="gradient"
-            size={isMobile ? "default" : "lg"}
+            size={isMobile ? 'default' : 'lg'}
             className={cn(
-              "w-full group hover:scale-105 transition-all duration-300 shadow-glow-sm hover:shadow-glow",
-              !isValid || isLoading ? "opacity-70 cursor-not-allowed" : ""
+              'w-full group hover:scale-105 transition-all duration-300 shadow-glow-sm hover:shadow-glow',
+              !isValid || isLoading ? 'opacity-70 cursor-not-allowed' : ''
             )}
             disabled={!isValid || isLoading}
           >

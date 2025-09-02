@@ -1,6 +1,25 @@
-import '@testing-library/jest-dom'
+require('@testing-library/jest-dom')
+
+// Polyfill TextEncoder for Node.js environment
+const { TextEncoder, TextDecoder } = require('util')
+global.TextEncoder = TextEncoder
+global.TextDecoder = TextDecoder
+
+// Polyfill Request for Node.js environment
+global.Request = class {
+  constructor(input, init) {
+    this.input = input
+    this.init = init
+  }
+}
+
+// Mock revalidatePath
+jest.mock('next/cache', () => ({
+  revalidatePath: jest.fn(),
+}))
 
 // Mock Next.js router
+
 jest.mock('next/router', () => ({
   useRouter: () => ({
     push: jest.fn(),

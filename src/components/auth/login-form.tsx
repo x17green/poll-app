@@ -22,8 +22,9 @@ import {
   CheckboxField,
   FormError,
   FormFooter,
-  LinkText
+  LinkText,
 } from './form-components'
+import { login } from '@/app/(auth)/actions'
 
 const loginFormSchema = z.object({
   email: z
@@ -37,10 +38,7 @@ const loginFormSchema = z.object({
   rememberMe: z.boolean().optional().default(false),
 })
 
-type LoginFormData = z.infer<typeof loginFormSchema>
-
 interface LoginFormProps {
-  onSubmit: (data: LoginFormData) => Promise<void>
   isLoading?: boolean
   className?: string
   showRememberMe?: boolean
@@ -50,7 +48,6 @@ interface LoginFormProps {
 }
 
 export function LoginForm({
-  onSubmit,
   isLoading = false,
   className,
   showRememberMe = true,
@@ -59,13 +56,12 @@ export function LoginForm({
   description = 'Sign in to your account to continue',
 }: LoginFormProps) {
   const [showPassword, setShowPassword] = React.useState(false)
-  const [submitError, setSubmitError] = React.useState<string>('')
+  const [submitError, setSubmitError] = React.useState<string>('') // Tracks form submission errors and is now used
 
   const {
     register,
-    handleSubmit,
+    handleSubmit, // Used for form submission
     formState: { errors, isValid },
-    setError,
   } = useForm({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -75,26 +71,6 @@ export function LoginForm({
     },
     mode: 'onChange',
   })
-
-  const handleFormSubmit = async (data: LoginFormData) => {
-    try {
-      setSubmitError('')
-      await onSubmit(data)
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : 'An error occurred during login'
-      setSubmitError(errorMessage)
-
-      // If it's a field-specific error, set it on the appropriate field
-      if (errorMessage.toLowerCase().includes('email')) {
-        setError('email', { message: errorMessage })
-      } else if (errorMessage.toLowerCase().includes('password')) {
-        setError('password', { message: errorMessage })
-      }
-    }
-  }
 
   // We don't need this function as it's handled by the PasswordField component
 
@@ -111,7 +87,20 @@ export function LoginForm({
       </CardHeader>
 
       <CardContent>
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+        <form
+          onSubmit={handleSubmit(async data => {
+            try {
+              const formData = new FormData()
+              formData.append('email', data.email)
+              formData.append('password', data.password)
+              formData.append('rememberMe', data.rememberMe.toString())
+              await login(formData)
+            } catch {
+              setSubmitError('An error occurred during login.')
+            }
+          })}
+          className="space-y-4"
+        >
           {/* Email Field */}
           <EmailField
             label="Email address"
@@ -143,7 +132,7 @@ export function LoginForm({
               />
             )}
             <Link
-              href="/auth/forgot-password"
+              href="/forgot-password"
               className="text-sm text-primary hover:underline"
             >
               Forgot password?
@@ -178,7 +167,7 @@ export function LoginForm({
             <FormFooter>
               <p className="text-sm text-muted-foreground">
                 Don&apos;t have an account?{' '}
-                <LinkText href="/auth/register">Create account</LinkText>
+                <LinkText href="/register">Create account</LinkText>
               </p>
             </FormFooter>
           )}

@@ -7,9 +7,11 @@ import { BarChart3, Menu, X, User, Plus, TrendingUp } from '@/components/ui/icon
 import { useResponsive } from '@/hooks/use-responsive'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn, glassStyles, premiumTextStyles } from '@/lib/theme'
+import { useAuth } from '@/contexts/AuthContext'
+import { logout } from '@/app/(auth)/actions'
 
 export function Navigation() {
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false)
+  const { user } = useAuth()
   const [isMenuOpen, setIsMenuOpen] = React.useState(false)
   const [mounted, setMounted] = React.useState(false)
   const { isMobile, isTablet, isDesktop } = useResponsive()
@@ -17,17 +19,10 @@ export function Navigation() {
 
   React.useEffect(() => {
     setMounted(true)
-    if (typeof window !== 'undefined') {
-      setIsAuthenticated(localStorage.getItem('isAuthenticated') === 'true')
-    }
   }, [])
 
-  const handleSignOut = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('isAuthenticated')
-      localStorage.removeItem('userEmail')
-      setIsAuthenticated(false)
-    }
+  const handleSignOut = async () => {
+    await logout()
   }
 
   const toggleMenu = () => {
@@ -154,7 +149,7 @@ export function Navigation() {
             "items-center",
             isMobile ? "hidden" : isTablet ? "hidden md:flex md:space-x-2 md:gap-1" : "hidden lg:flex lg:space-x-3 lg:gap-2"
           )}>
-            {isAuthenticated ? (
+            {user ? (
               <div className="flex items-center space-x-3">
                 <div className={cn(
                   "flex items-center space-x-2 px-3 py-2 text-sm",
@@ -163,7 +158,7 @@ export function Navigation() {
                   isTablet ? "hidden lg:flex" : isDesktop ? "flex" : "hidden"
                 )}>
                   <User className="h-4 w-4" />
-                  <span>Welcome back!</span>
+                  <span>Welcome back, {user?.user_metadata?.display_name || user.email}!</span>
                 </div>
                 <Button
                   variant="outline"
@@ -177,7 +172,7 @@ export function Navigation() {
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <Link href="/auth/login">
+                <Link href="/login">
                   <Button
                     variant="ghost"
                     size={isTablet ? "sm" : "default"}
@@ -188,7 +183,7 @@ export function Navigation() {
                     <User className={cn("h-4 w-4", isTablet ? "lg:hidden" : "hidden")} />
                   </Button>
                 </Link>
-                <Link href="/auth/register">
+                <Link href="/register">
                   <Button
                     variant="gradient"
                     size={isTablet ? "sm" : "default"}
@@ -299,7 +294,7 @@ export function Navigation() {
           "px-4 pb-4 pt-2 border-t bg-muted/10",
           isDark ? "border-white/10" : "border-black/10"
         )}>
-          {isAuthenticated ? (
+          {user ? (
             <div className="space-y-3">
               <div className={cn(
                 "flex items-center gap-3 px-4 py-3 text-sm",
@@ -307,7 +302,7 @@ export function Navigation() {
                 "bg-muted/40 rounded-xl"
               )}>
                 <User className="h-5 w-5" />
-                <span>Welcome back!</span>
+                <span>Welcome back, {user?.user_metadata?.display_name || user.email}!</span>
               </div>
               <Button
                 variant="outline"
@@ -326,14 +321,14 @@ export function Navigation() {
             </div>
           ) : (
             <div className="space-y-3">
-              <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/login" onClick={() => setIsMenuOpen(false)}>
                 <Button variant="ghost" size="sm" className="w-full focus-enhanced" responsive fullWidth>
                   <User className="h-4 w-4 mr-2" />
                   Sign In
                 </Button>
               </Link>
               <Link
-                href="/auth/register"
+                href="/register"
                 onClick={() => setIsMenuOpen(false)}
               >
                 <Button variant="gradient" size="sm" className="w-full focus-enhanced" responsive fullWidth>

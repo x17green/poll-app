@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { Navigation } from '@/components/navigation'
 import { Footer } from '@/components/footer'
 import { ThemeProvider, ThemeToggle } from '@/contexts/ThemeContext'
+import { AuthProvider } from '@/contexts/AuthContext'
 import './globals.css'
 
 const inter = Inter({
@@ -149,44 +150,46 @@ export default function RootLayout({
         `}
       >
         {/* Theme Provider with enhanced error boundary */}
-        <ThemeProvider>
-          {/* Skip to main content for accessibility */}
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 px-4 py-2 bg-primary text-primary-foreground rounded-md transition-all duration-200"
-          >
-            Skip to main content
-          </a>
+        <AuthProvider>
+          <ThemeProvider>
+            {/* Skip to main content for accessibility */}
+            <a
+              href="#main-content"
+              className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 px-4 py-2 bg-primary text-primary-foreground rounded-md transition-all duration-200"
+            >
+              Skip to main content
+            </a>
 
-          {/* Navigation with sticky positioning */}
-          <Navigation />
+            {/* Navigation with sticky positioning */}
+            <Navigation />
 
-          {/* Main content area with proper semantic structure */}
-          <main
-            id="main-content"
-            className="flex-1 relative focus:outline-none"
-            tabIndex={-1}
-          >
-            <div className="min-h-full">
-              {children}
-            </div>
-          </main>
+            {/* Main content area with proper semantic structure */}
+            <main
+              id="main-content"
+              className="flex-1 relative focus:outline-none"
+              tabIndex={-1}
+            >
+              <div className="min-h-full">
+                {children}
+              </div>
+            </main>
 
-          {/* Footer */}
-          <Footer />
+            {/* Footer */}
+            <Footer />
 
-          {/* Theme toggle button */}
-          <ThemeToggle />
+            {/* Theme toggle button */}
+            <ThemeToggle />
 
-          {/* Scroll indicator for long pages */}
-          <div
-            className="fixed top-0 left-0 h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60 z-50 transition-all duration-300"
-            style={{
-              width: 'var(--scroll-progress, 0%)',
-              transformOrigin: 'left',
-            }}
-          />
-        </ThemeProvider>
+            {/* Scroll indicator for long pages */}
+            <div
+              className="fixed top-0 left-0 h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60 z-50 transition-all duration-300"
+              style={{
+                width: 'var(--scroll-progress, 0%)',
+                transformOrigin: 'left',
+              }}
+            />
+          </ThemeProvider>
+        </AuthProvider>
 
         {/* Loading state for page transitions */}
         <div

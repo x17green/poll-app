@@ -24,8 +24,9 @@ import {
   FormError,
   FormFooter,
   LinkText,
-  PasswordStrengthIndicator
+  PasswordStrengthIndicator,
 } from './form-components'
+import { signup } from '@/app/(auth)/actions'
 
 const registerFormSchema = z
   .object({
@@ -63,9 +64,6 @@ const registerFormSchema = z
 type RegisterFormData = z.infer<typeof registerFormSchema>
 
 interface RegisterFormProps {
-  onSubmit: (
-    data: Omit<RegisterFormData, 'confirmPassword' | 'acceptTerms'>
-  ) => Promise<void>
   isLoading?: boolean
   className?: string
   showLoginLink?: boolean
@@ -74,7 +72,6 @@ interface RegisterFormProps {
 }
 
 export function RegisterForm({
-  onSubmit,
   isLoading = false,
   className,
   showLoginLink = true,
@@ -83,13 +80,13 @@ export function RegisterForm({
 }: RegisterFormProps) {
   const [showPassword, setShowPassword] = React.useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false)
-  const [submitError, setSubmitError] = React.useState<string>('')
+  const [submitError, setSubmitError] = React.useState<string>('') // Tracks form submission errors and is now used
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-    setError,
+
     watch,
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerFormSchema),
@@ -104,32 +101,6 @@ export function RegisterForm({
   })
 
   const password = watch('password')
-
-  const handleFormSubmit = async (data: RegisterFormData) => {
-    try {
-      setSubmitError('')
-      await onSubmit({
-        username: data.username,
-        email: data.email,
-        password: data.password,
-      })
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : 'An error occurred during registration'
-      setSubmitError(errorMessage)
-
-      // If it's a field-specific error, set it on the appropriate field
-      if (errorMessage.toLowerCase().includes('username')) {
-        setError('username', { message: errorMessage })
-      } else if (errorMessage.toLowerCase().includes('email')) {
-        setError('email', { message: errorMessage })
-      } else if (errorMessage.toLowerCase().includes('password')) {
-        setError('password', { message: errorMessage })
-      }
-    }
-  }
 
   // No longer need these toggle functions as they are handled by the components
 
@@ -148,7 +119,22 @@ export function RegisterForm({
       </CardHeader>
 
       <CardContent>
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+        <form
+          onSubmit={handleSubmit(async data => {
+            try {
+              const formData = new FormData()
+              formData.append('username', data.username)
+              formData.append('email', data.email)
+              formData.append('password', data.password)
+              formData.append('confirmPassword', data.confirmPassword)
+              formData.append('acceptTerms', data.acceptTerms.toString())
+              await signup(formData)
+            } catch {
+              setSubmitError('An error occurred during registration.')
+            }
+          })}
+          className="space-y-4"
+        >
           {/* Username Field */}
           <UsernameField
             label="Username"
@@ -181,9 +167,7 @@ export function RegisterForm({
           />
 
           {/* Password Strength Indicator */}
-          {password && (
-            <PasswordStrengthIndicator password={password} />
-          )}
+          {password && <PasswordStrengthIndicator password={password} />}
 
           {/* Confirm Password Field */}
           <PasswordField
@@ -244,7 +228,7 @@ export function RegisterForm({
             <FormFooter>
               <p className="text-sm text-muted-foreground">
                 Already have an account?{' '}
-                <LinkText href="/auth/login">Sign in</LinkText>
+                <LinkText href="/login">Sign in</LinkText>
               </p>
             </FormFooter>
           )}

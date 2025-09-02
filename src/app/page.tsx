@@ -219,7 +219,7 @@ export default function HomePage() {
                 </Button>
               </Link>
             ) : (
-              <Link href="/auth/register" className={isMobile ? "w-full" : ""}>
+              <Link href="/register" className={isMobile ? "w-full" : ""}>
                 <Button
                   variant="gradient"
                   size={isMobile ? "default" : "lg"}
@@ -478,7 +478,7 @@ export default function HomePage() {
             )}>
               {!isAuthenticated ? (
                 <>
-                  <Link href="/auth/register" className={isMobile ? "w-full" : ""}>
+                  <Link href="/register" className={isMobile ? "w-full" : ""}>
                     <Button
                       variant="gradient"
                       size={isMobile ? "default" : "lg"}
@@ -489,7 +489,7 @@ export default function HomePage() {
                       <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                     </Button>
                   </Link>
-                  <Link href="/auth/login" className={isMobile ? "w-full" : ""}>
+                  <Link href="/login" className={isMobile ? "w-full" : ""}>
                     <Button
                       variant="glass"
                       size={isMobile ? "default" : "lg"}
